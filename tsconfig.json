@@ -28,7 +28,11 @@
         "./*"
       ]
     },
-    "types": []
+    "types": [
+      "node",
+      "@types/prettier",
+      "@types/babel__core"
+    ]
   },
   "exclude": [
     "node_modules",
