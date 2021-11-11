@@ -17,10 +17,17 @@
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/chai": "^4.2.22",
+    "@types/mocha": "^9.0.0",
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3",
+    "ts-node": "^10.4.0"
+  },
   "scripts": {
     "build": "ts-node --project node.tsconfig.json scripts/build.ts",
     "deploy": "ts-node --project node.tsconfig.json scripts/deploy.ts",
+    "test": "mocha -r ts-node/register test/spec/**/*.ts",
     "getLatestState": "ts-node --project node.tsconfig.json scripts/getLatestState.ts",
     "updateState": "ts-node --project node.tsconfig.json scripts/updateState.ts"
   },

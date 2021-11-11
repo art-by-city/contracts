@@ -20,8 +20,8 @@ const RESERVED_NAMES = [
   'admin'
 ]
 
-type UsernamesContractInput = any
-type UsernamesContractResult = any
+export type UsernamesContractInput = any
+export type UsernamesContractResult = any
 
 export function handle(
   state: UsernamesContractState,
