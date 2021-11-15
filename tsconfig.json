@@ -31,7 +31,9 @@
     "types": [
       "node",
       "@types/prettier",
-      "@types/babel__core"
+      "@types/babel__core",
+      "@types/mocha",
+      "@types/chai"
     ]
   },
   "exclude": [
