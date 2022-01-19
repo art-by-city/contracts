@@ -4,9 +4,7 @@ import { ContractError, ContractAssert } from '../../environment'
 
 export interface UsernamesContractState {
   usernames: {
-    [username: string]: {
-      owner: string
-    }
+    [owner: string]: string
   }
 }
 
@@ -17,85 +15,58 @@ const RESERVED_NAMES = [
   'debug',
   'learn',
   'settings',
-  'admin'
+  'admin',
+  'me',
+  'you',
+  'discover',
+  'feed'
 ]
+const MIN_USERNAME_LENGTH = 2
+const MAX_USERNAME_LENGTH = 64
+const ALLOWED_CHARS = /^[a-z0-9_\.]+$/
 
-export type UsernamesContractInput = any
+export type UsernamesContractInput = {
+  function: 'register'
+  username: string
+} | {
+  function: 'release'
+}
 export type UsernamesContractResult = any
-
 export function handle(
   state: UsernamesContractState,
   action: ContractInteraction<UsernamesContractInput>
-): Partial<HandlerResult<UsernamesContractState, UsernamesContractResult>> {
+): HandlerResult<UsernamesContractState, UsernamesContractResult> {
   if (action.input.function === 'register') {
     const username = action.input.username
 
-    ContractAssert(typeof username === 'string', 'name must be a string')
-    ContractAssert(username.length > 1, 'name must be at least 2 characters')
-    ContractAssert(!RESERVED_NAMES.includes(username), 'name is reserved')
-    console.log('contract', state)
-    ContractAssert(!(state.usernames[username]), 'name already registered')
+    ContractAssert(typeof username === 'string', 'username must be a string')
+    ContractAssert(
+      username.length >= MIN_USERNAME_LENGTH,
+      `username must be at least ${MIN_USERNAME_LENGTH} characters`
+    )
+    ContractAssert(
+      username.length <= MAX_USERNAME_LENGTH,
+      `username must be no longer than ${MAX_USERNAME_LENGTH} characters`
+    )
+    ContractAssert(
+      ALLOWED_CHARS.test(username),
+      'username must only contain lowercase letters, numbers, periods, and underscores'
+    )
+    ContractAssert(!RESERVED_NAMES.includes(username), 'username is reserved')
+    ContractAssert(
+      !Object.values(state.usernames).includes(username),
+      'username already registered'
+    )
 
-    // TODO -> only allow users to own 1 username at a time
+    state.usernames[action.caller] = username
 
-    state.usernames[username] = {
-      owner: action.caller
-    }
-
-    return { state }
+    return { state, result: true }
   }
 
-  if (action.input.function === 'update') {
-    const username = action.input.username
+  if (action.input.function === 'release') {
+    delete state.usernames[action.caller]
 
-    ContractAssert(typeof username === 'string', 'name must be a string')
-    ContractAssert(username.length > 1, 'name must be at least 2 characters')
-    ContractAssert(!!(state.usernames[username]), 'name not registered')
-    ContractAssert(
-      state.usernames[username].owner === action.caller,
-      'name not owned by caller'
-    )
-
-    state.usernames[username].owner = action.caller
-
-    return { state }
-  }
-
-  if (action.input.function === 'transfer') {
-    const username = action.input.username
-    const target = action.input.target
-
-    ContractAssert(typeof username === 'string', 'name must be a string')
-    ContractAssert(username.length > 1, 'name must be at least 2 characters')
-    ContractAssert(
-      typeof target === 'string',
-      'target must be provided to transfer name to'
-    )
-    ContractAssert(!!(state.usernames[username]), 'name not registered')
-    ContractAssert(
-      state.usernames[username].owner === action.caller,
-      'name not owned by caller'
-    )
-
-    state.usernames[username].owner = target
-
-    return { state }
-  }
-
-  if (action.input.function === 'giveup') {
-    const username = action.input.username
-
-    ContractAssert(typeof username === 'string', 'name must be a string')
-    ContractAssert(username.length > 1, 'name must be at least 2 characters')
-    ContractAssert(!!(state.usernames[username]), 'name not registered')
-    ContractAssert(
-      state.usernames[username].owner === action.caller,
-      'name not owned by caller'
-    )
-
-    delete state.usernames[username]
-
-    return { state }
+    return { state, result: true }
   }
 
   throw new ContractError('Invalid input')
