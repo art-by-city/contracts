@@ -15,20 +15,28 @@ import { expect } from 'chai'
 
 const ARLOCAL_PORT = Number.parseInt(process.env.ARLOCAL_PORT || '1984')
 
-describe('usernames contract', () => {
+describe('usernames contract', function() {
   let arlocal: ArLocal,
       arweave: Arweave,
       smartweave: SmartWeave,
       wallet: JWKInterface,
       walletAddress: string,
-      contract: Contract<UsernamesContractState>
+      anotherWallet: JWKInterface,
+      anotherWalletAddress: string,
+      contract: Contract<UsernamesContractState>,
+      anotherContractHandle: Contract<UsernamesContractState>,
+      contractSrc: string,
+      initialState: string
 
-  async function mine() {
-    await arweave.api.get('mine')
+  async function mine(blocks = 1) {
+    await arweave.api.get(`mine/${blocks}`)
   }
 
-  beforeEach('reset test environment', async () => {
+  this.timeout(7000)
+
+  before('set up environment', async () => {
     arlocal = new ArLocal(ARLOCAL_PORT, false)
+
     await arlocal.start()
 
     arweave = Arweave.init({
@@ -41,35 +49,138 @@ describe('usernames contract', () => {
 
     smartweave = SmartWeaveNodeFactory.memCached(arweave)
 
+    contractSrc = (await fs.readFile(
+      path.join(__dirname, '../../../dist/usernames/contract.js')
+    )).toString()
+
+    initialState = (await fs.readFile(
+      path.join(__dirname, '../../../src/usernames/state.json')
+    )).toString()
+  })
+
+  after('stop arlocal', async () => {
+    if (arlocal) {
+      await arlocal.stop()
+    }
+  })
+
+  beforeEach('generate new wallets, deploy fresh contract', async () => {
     wallet = await arweave.wallets.generate()
     walletAddress = await arweave.wallets.jwkToAddress(wallet)
-
-    const contractSrc = await fs.readFile(
-      path.join(__dirname, '../../../dist/usernames/contract.js')
-    )
-    const initialState = await fs.readFile(
-      path.join(__dirname, '../../../src/usernames/state.json')
-    )
+    await arweave.api.get(`/mint/${walletAddress}/184717954005648`)
+    anotherWallet = await arweave.wallets.generate()
+    anotherWalletAddress = await arweave.wallets.jwkToAddress(anotherWallet)
+    await arweave.api.get(`/mint/${anotherWalletAddress}/184717954005648`)
 
     const contractTxId = await smartweave.createContract.deploy({
       wallet,
-      initState: initialState.toString(),
-      src: contractSrc.toString()
+      initState: initialState,
+      src: contractSrc
     })
 
     contract = smartweave.contract<UsernamesContractState>(contractTxId)
     contract.connect(wallet)
 
+    anotherContractHandle = smartweave.contract<UsernamesContractState>(
+      contractTxId
+    )
+    anotherContractHandle.connect(anotherWallet)
+
     await mine()
   })
 
-  afterEach(async () => {
-    await arlocal.stop()
+  it('should match initial state after deployment', async () => {
+    const { state: { usernames } } = await contract.readState()
+
+    expect(usernames).to.be.empty
   })
 
-  it('should read state', async () => {
-    const { state } = await contract.readState()
+  it('should register usernames', async () => {
+    const username = 'test'
 
-    expect(state.usernames).to.be.empty
+    await contract.writeInteraction({ function: 'register', username })
+    await mine()
+    const { state: { usernames } } = await contract.readState()
+
+    expect(usernames).to.not.be.empty
+    expect(usernames[walletAddress]).to.equal(username)
+  })
+
+  it('should not allow reserved usernames', async () => {
+    const username = 'admin'
+
+    await contract.writeInteraction({ function: 'register', username })
+    await mine()
+    const { state: { usernames } } = await contract.readState()
+
+    expect(usernames).to.be.empty
+  })
+
+  it('should validate usernames', async () => {
+    const username = 'TEST'
+
+    await contract.writeInteraction({ function: 'register', username })
+    await mine()
+
+    const { state: { usernames } } = await contract.readState()
+    expect(usernames).to.be.empty
+  })
+
+  it('should allow users to update their usernames', async () => {
+    const username1 = 'test1'
+    const username2 = 'test2'
+
+    await contract.writeInteraction({
+      function: 'register',
+      username: username1
+    })
+    await mine()
+    await contract.writeInteraction({
+      function: 'register',
+      username: username2
+    }, undefined, undefined, true)
+    // NB: test fails without forcing strict mode on above writeInteraction ?
+    await mine()
+    const { state: { usernames } } = await contract.readState()
+
+    expect(usernames[walletAddress]).to.equal(username2)
+  })
+
+  it('should not allow a username to be registered twice', async () => {
+    const username = 'test'
+
+    await contract.writeInteraction({
+      function: 'register',
+      username
+    })
+    await mine()
+    await anotherContractHandle.writeInteraction({
+      function: 'register',
+      username
+    })
+    await mine()
+    const { state: { usernames } } = await contract.readState()
+
+    expect(usernames[walletAddress]).to.equal(username)
+    expect(usernames[anotherWalletAddress]).to.be.undefined
+  })
+
+  it('should release usernames', async () => {
+    const username = 'test'
+
+    await contract.writeInteraction({
+      function: 'register',
+      username
+    })
+    await mine()
+    let { state: { usernames } } = await contract.readState()
+
+    expect(usernames[walletAddress]).to.equal(username)
+
+    await contract.writeInteraction({ function: 'release' })
+    await mine()
+    ;({ state: { usernames } } = await contract.readState())
+
+    expect(usernames[walletAddress]).to.be.undefined
   })
 })
