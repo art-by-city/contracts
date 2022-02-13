@@ -43,20 +43,6 @@ describe('usernames contract', () => {
       expect(state.usernames[MOCK_ADDRESS_1]).to.equal(MOCK_USERNAME_1)
     })
 
-    it('should not allow reserved usernames', () => {
-      const interaction: ContractInteraction<UsernamesContractInput> = {
-        caller: MOCK_ADDRESS_1,
-        input: {
-          function: 'register',
-          username: 'admin'
-        }
-      }
-
-      expect(() => {
-        handle(initState, interaction)
-      }).to.throw(ContractError)
-    })
-
     it('should not allow a username to be registered twice', () => {
       const interaction: ContractInteraction<UsernamesContractInput> = {
         caller: MOCK_ADDRESS_1,

@@ -8,39 +8,6 @@ export interface UsernamesContractState {
   }
 }
 
-const RESERVED_NAMES = [
-  'publish',
-  'about',
-  'changelog',
-  'debug',
-  'learn',
-  'settings',
-  'admin',
-  'me',
-  'you',
-  'discover',
-  'feed',
-  'features',
-  'token',
-  'tokens',
-  'tokenomics',
-  'litepaper',
-  'whitepaper',
-  'monetize',
-  'faq',
-  'mint',
-  'collect',
-  'collection',
-  'nft',
-  'nfts',
-  'community',
-  'pst',
-  'psts',
-  'psc',
-  'vote',
-  'curate',
-  'curation'
-]
 const MIN_USERNAME_LENGTH = 2
 const MAX_USERNAME_LENGTH = 64
 const ALLOWED_CHARS = /^[a-z0-9_\.]+$/
@@ -72,7 +39,6 @@ export function handle(
       ALLOWED_CHARS.test(username),
       'username must only contain lowercase letters, numbers, periods, and underscores'
     )
-    ContractAssert(!RESERVED_NAMES.includes(username), 'username is reserved')
     ContractAssert(
       !Object.values(state.usernames).includes(username),
       'username already registered'

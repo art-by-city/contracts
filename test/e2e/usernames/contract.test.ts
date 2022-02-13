@@ -106,16 +106,6 @@ describe('usernames contract', function() {
     expect(usernames[walletAddress]).to.equal(username)
   })
 
-  it('should not allow reserved usernames', async () => {
-    const username = 'admin'
-
-    await contract.writeInteraction({ function: 'register', username })
-    await mine()
-    const { state: { usernames } } = await contract.readState()
-
-    expect(usernames).to.be.empty
-  })
-
   it('should validate usernames', async () => {
     const username = 'TEST'
 
