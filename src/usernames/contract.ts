@@ -19,7 +19,27 @@ const RESERVED_NAMES = [
   'me',
   'you',
   'discover',
-  'feed'
+  'feed',
+  'features',
+  'token',
+  'tokens',
+  'tokenomics',
+  'litepaper',
+  'whitepaper',
+  'monetize',
+  'faq',
+  'mint',
+  'collect',
+  'collection',
+  'nft',
+  'nfts',
+  'community',
+  'pst',
+  'psts',
+  'psc',
+  'vote',
+  'curate',
+  'curation'
 ]
 const MIN_USERNAME_LENGTH = 2
 const MAX_USERNAME_LENGTH = 64
