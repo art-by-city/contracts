@@ -7,13 +7,13 @@ const arweave = new Arweave({
   port: process.env.ARWEAVE_PORT || 1984
 })
 
-const APP_NAME = process.env.APP_NAME || 'ArtByCity'
+const APP_NAME = process.env.APP_NAME || 'ArtByCity-Development'
 const APP_VERSION = process.env.APP_VERSION || 'development'
 
 async function deployContract(name: string) {
   // Read wallet file, path from environment
   const wallet = JSON.parse(
-    (await fs.readFile(process.env.DEPLOYER_KEYFILE || '')).toString()
+    (await fs.readFile(process.env.DEPLOYER_KEYFILE || 'no-keyfile')).toString()
   )
 
   // Read contract source JS file
