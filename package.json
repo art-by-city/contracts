@@ -12,6 +12,7 @@
     "@types/prettier": "^2.4.1",
     "arweave": "^1.10.18",
     "babel-plugin-transform-remove-imports": "^1.7.0",
+    "dotenv": "^16.0.0",
     "prettier": "^2.4.1",
     "redstone-smartweave": "^0.3.10-alpha.19",
     "ts-node": "^10.4.0",
