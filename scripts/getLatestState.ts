@@ -1,5 +1,5 @@
 import Arweave from 'arweave'
-import { SmartWeaveNodeFactory } from 'redstone-smartweave'
+import { WarpNodeFactory } from 'warp-contracts'
 
 const arweave = new Arweave({
   protocol: process.env.ARWEAVE_PROTOCOL || 'http',
@@ -7,12 +7,12 @@ const arweave = new Arweave({
   port: process.env.ARWEAVE_PORT || 1984
 })
 
-const smartweave = SmartWeaveNodeFactory.memCached(arweave)
+const smartweave = WarpNodeFactory.forTesting(arweave)
 
 async function getLatestState(contractId: string) {
-  const latestState = await smartweave.contract(contractId).readState()
+  const stateResult = await smartweave.contract(contractId).readState()
 
-  console.log(latestState)
+  console.log(stateResult)
 }
 
 (async () => {

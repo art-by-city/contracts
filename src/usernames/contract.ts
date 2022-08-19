@@ -1,4 +1,4 @@
-import { ContractInteraction, HandlerResult } from 'redstone-smartweave'
+import { ContractInteraction, HandlerResult } from 'warp-contracts'
 
 import { ContractError, ContractAssert } from '../../environment'
 

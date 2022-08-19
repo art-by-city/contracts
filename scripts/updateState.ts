@@ -1,13 +1,13 @@
 import fs from 'fs/promises'
 import Arweave from 'arweave'
-import { SmartWeaveNodeFactory } from 'redstone-smartweave'
+import { WarpNodeFactory } from 'warp-contracts'
 
 const arweave = new Arweave({
   protocol: process.env.ARWEAVE_PROTOCOL || 'http',
   host: process.env.ARWEAVE_HOST || 'localhost',
   port: process.env.ARWEAVE_PORT || 1984
 })
-const smartweave = SmartWeaveNodeFactory.memCached(arweave)
+const smartweave = WarpNodeFactory.forTesting(arweave)
 
 async function updateState(contractId: string) {
   const wallet = JSON.parse(
@@ -16,7 +16,7 @@ async function updateState(contractId: string) {
   const contract = smartweave.contract(contractId).connect(wallet)
   const input = {
     function: 'register',
-    username: 'Jim'
+    username: 'jim'
   }
 
   const txId = await contract.writeInteraction(input)
