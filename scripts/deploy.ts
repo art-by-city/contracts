@@ -2,14 +2,18 @@ import 'dotenv/config'
 import fs from 'fs/promises'
 import Arweave from 'arweave'
 
-const arweave = new Arweave({
+const arweaveConfig = {
   protocol: process.env.ARWEAVE_PROTOCOL || 'http',
   host: process.env.ARWEAVE_HOST || 'localhost',
   port: process.env.ARWEAVE_PORT || 1984
-})
+}
+
+const arweave = new Arweave(arweaveConfig)
 
 const APP_NAME = process.env.APP_NAME || 'ArtByCity-Development'
 const APP_VERSION = process.env.APP_VERSION || 'development'
+
+console.log('ARWEAVE CONFIG', arweaveConfig)
 
 async function deployContract(name: string) {
   // Read wallet file, path from environment
@@ -30,6 +34,7 @@ async function deployContract(name: string) {
     { data: contractSourceJS },
     wallet
   )
+  contractTx.addTag('Protocol', 'ArtByCity')
   contractTx.addTag('App-Name', APP_NAME)
   contractTx.addTag('App-Version', APP_VERSION)
   contractTx.addTag('Content-Type', 'application/javascript')
@@ -46,6 +51,7 @@ async function deployContract(name: string) {
     { data: initialStateJSON },
     wallet
   )
+  initialStateTx.addTag('Protocol', 'ArtByCity')
   initialStateTx.addTag('App-Name', APP_NAME)
   initialStateTx.addTag('App-Version', APP_VERSION)
   initialStateTx.addTag('Content-Type', 'application/json')

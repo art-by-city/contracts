@@ -6,9 +6,9 @@ import { JWKInterface } from 'arweave/node/lib/wallet'
 import {
   Contract,
   LoggerFactory,
-  SmartWeave,
-  SmartWeaveNodeFactory
-} from 'redstone-smartweave'
+  Warp,
+  WarpNodeFactory
+} from 'warp-contracts'
 
 import { UsernamesContractState } from '../../../src/usernames/contract'
 import { expect } from 'chai'
@@ -18,7 +18,7 @@ const ARLOCAL_PORT = Number.parseInt(process.env.ARLOCAL_PORT || '1984')
 describe('usernames contract', function() {
   let arlocal: ArLocal,
       arweave: Arweave,
-      smartweave: SmartWeave,
+      smartweave: Warp,
       wallet: JWKInterface,
       walletAddress: string,
       anotherWallet: JWKInterface,
@@ -26,7 +26,8 @@ describe('usernames contract', function() {
       contract: Contract<UsernamesContractState>,
       anotherContractHandle: Contract<UsernamesContractState>,
       contractSrc: string,
-      initialState: string
+      initialStateJson: string,
+      initialState: UsernamesContractState
 
   async function mine(blocks = 1) {
     await arweave.api.get(`mine/${blocks}`)
@@ -47,15 +48,16 @@ describe('usernames contract', function() {
 
     LoggerFactory.INST.logLevel('error')
 
-    smartweave = SmartWeaveNodeFactory.memCached(arweave)
+    smartweave = WarpNodeFactory.forTesting(arweave)
 
     contractSrc = (await fs.readFile(
       path.join(__dirname, '../../../dist/usernames/contract.js')
     )).toString()
 
-    initialState = (await fs.readFile(
+    initialStateJson = (await fs.readFile(
       path.join(__dirname, '../../../src/usernames/state.json')
     )).toString()
+    initialState = JSON.parse(initialStateJson)
   })
 
   after('stop arlocal', async () => {
@@ -72,9 +74,9 @@ describe('usernames contract', function() {
     anotherWalletAddress = await arweave.wallets.jwkToAddress(anotherWallet)
     await arweave.api.get(`/mint/${anotherWalletAddress}/184717954005648`)
 
-    const contractTxId = await smartweave.createContract.deploy({
+    const { contractTxId } = await smartweave.createContract.deploy({
       wallet,
-      initState: initialState,
+      initState: initialStateJson,
       src: contractSrc
     })
 

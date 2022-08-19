@@ -1,6 +1,6 @@
 import 'mocha'
 import { expect } from 'chai'
-import { ContractInteraction } from 'redstone-smartweave'
+import { ContractInteraction } from 'warp-contracts'
 
 import {
   handle,
