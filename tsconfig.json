@@ -33,7 +33,8 @@
       "@types/prettier",
       "@types/babel__core",
       "@types/mocha",
-      "@types/chai"
+      "@types/chai",
+      "@types/minimist"
     ]
   },
   "exclude": [

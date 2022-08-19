@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import fs from 'fs/promises'
 import Arweave from 'arweave'
+import minimist from 'minimist'
 
 const arweaveConfig = {
   protocol: process.env.ARWEAVE_PROTOCOL || 'http',
@@ -15,19 +16,25 @@ const APP_VERSION = process.env.APP_VERSION || 'development'
 
 console.log('ARWEAVE CONFIG', arweaveConfig)
 
-async function deployContract(name: string) {
+async function deployContract(contractName: string, keyfilePath: string) {
+  if (!contractName) {
+    throw new Error('No contract specified')
+  }
+
+  if (!keyfilePath) {
+    throw new Error('No deployer keyfile specified')
+  }
+
   // Read wallet file, path from environment
-  const wallet = JSON.parse(
-    (await fs.readFile(process.env.DEPLOYER_KEYFILE || 'no-keyfile')).toString()
-  )
+  const wallet = JSON.parse((await fs.readFile(keyfilePath)).toString())
 
   // Read contract source JS file
   const contractSourceJS = await fs.readFile(
-    `dist/${name}/contract.js`
+    `dist/${contractName}/contract.js`
   )
 
   // Read initial state JSON file
-  const initialStateJSON = await fs.readFile(`src/${name}/state.json`)
+  const initialStateJSON = await fs.readFile(`src/${contractName}/state.json`)
 
   // Create contract tx
   const contractTx = await arweave.createTransaction(
@@ -56,7 +63,7 @@ async function deployContract(name: string) {
   initialStateTx.addTag('App-Version', APP_VERSION)
   initialStateTx.addTag('Content-Type', 'application/json')
   initialStateTx.addTag('Contract-Src', contractTxId)
-  initialStateTx.addTag('Contract-Name', `${name}`)
+  initialStateTx.addTag('Contract-Name', `${contractName}`)
 
   // Sign initial state tx
   await arweave.transactions.sign(initialStateTx, wallet)
@@ -71,7 +78,17 @@ async function deployContract(name: string) {
 
 (async () => {
   try {
-    await deployContract('usernames')
+    const args = minimist(process.argv.slice(2))
+    const contractName = args._[0]
+      || args.c
+      || args.contract
+      || process.env.CONTRACT
+    const keyfilePath = args._[1]
+      || args.k
+      || args.keyfile
+      || process.env.KEYFILE
+
+    await deployContract(contractName, keyfilePath)
   } catch (error) {
     console.error(error)
   }
