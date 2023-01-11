@@ -6,11 +6,11 @@ import {
   handle,
   UsernamesContractInput,
   UsernamesContractState
-} from '../../../src/usernames/contract'
-import { ContractError } from '../../../environment'
+} from '../../../../src/contracts/usernames/contract'
+import { ContractError } from '../../../../environment'
 
 const MOCK_ADDRESS_1 = '0xMOCK-ADDRESS-1'
-const MOCK_ADDRESS_2 = '0xMOCK-ADDRESS-1'
+const MOCK_ADDRESS_2 = '0xMOCK-ADDRESS-2'
 const MOCK_USERNAME_1 = 'mockusername1'
 const MOCK_USERNAME_2 = 'mockusername2'
 
