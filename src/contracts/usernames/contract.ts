@@ -1,6 +1,6 @@
 import { ContractInteraction, HandlerResult } from 'warp-contracts'
 
-import { ContractError, ContractAssert } from '../../environment'
+import { ContractAssert, ContractError } from '../../../environment'
 
 export interface UsernamesContractState {
   usernames: {

@@ -9,9 +9,11 @@ import {
   Warp,
   WarpNodeFactory
 } from 'warp-contracts'
-
-import { UsernamesContractState } from '../../../src/usernames/contract'
 import { expect } from 'chai'
+
+import {
+  UsernamesContractState
+} from '../../../src/contracts/usernames/contract'
 
 const ARLOCAL_PORT = Number.parseInt(process.env.ARLOCAL_PORT || '1984')
 
@@ -29,9 +31,7 @@ describe('usernames contract', function() {
       initialStateJson: string,
       initialState: UsernamesContractState
 
-  async function mine(blocks = 1) {
-    await arweave.api.get(`mine/${blocks}`)
-  }
+  const mine = async (blocks = 1) => await arweave.api.get(`mine/${blocks}`)
 
   this.timeout(7000)
 
@@ -51,11 +51,11 @@ describe('usernames contract', function() {
     smartweave = WarpNodeFactory.forTesting(arweave)
 
     contractSrc = (await fs.readFile(
-      path.join(__dirname, '../../../dist/usernames/contract.js')
+      path.join(__dirname, '../../../dist/contracts/usernames/contract.js')
     )).toString()
 
     initialStateJson = (await fs.readFile(
-      path.join(__dirname, '../../../src/usernames/state.json')
+      path.join(__dirname, '../../../src/contracts/usernames/state.json')
     )).toString()
     initialState = JSON.parse(initialStateJson)
   })

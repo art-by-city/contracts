@@ -16,7 +16,11 @@ const APP_VERSION = process.env.APP_VERSION || 'development'
 
 console.log('ARWEAVE CONFIG', arweaveConfig)
 
-async function deployContract(contractName: string, keyfilePath: string) {
+async function deployContract(
+  contractName: string,
+  keyfilePath: string,
+  deployOnly: boolean = false
+) {
   if (!contractName) {
     throw new Error('No contract specified')
   }
@@ -30,11 +34,16 @@ async function deployContract(contractName: string, keyfilePath: string) {
 
   // Read contract source JS file
   const contractSourceJS = await fs.readFile(
-    `dist/${contractName}/contract.js`
+    `dist/contracts/${contractName}/contract.js`
   )
 
-  // Read initial state JSON file
-  const initialStateJSON = await fs.readFile(`src/${contractName}/state.json`)
+  // Read initial state JSON file if initializing
+  let initialStateJSON: Buffer | null = null
+  if (!deployOnly) {
+    initialStateJSON = await fs.readFile(
+      `src/contracts/${contractName}/state.json`
+    )
+  }
 
   // Create contract tx
   const contractTx = await arweave.createTransaction(
@@ -53,27 +62,30 @@ async function deployContract(contractName: string, keyfilePath: string) {
   // Deploy contract tx
   await arweave.transactions.post(contractTx)
 
-  // Create initial state tx
-  const initialStateTx = await arweave.createTransaction(
-    { data: initialStateJSON },
-    wallet
-  )
-  initialStateTx.addTag('Protocol', 'ArtByCity')
-  initialStateTx.addTag('App-Name', APP_NAME)
-  initialStateTx.addTag('App-Version', APP_VERSION)
-  initialStateTx.addTag('Content-Type', 'application/json')
-  initialStateTx.addTag('Contract-Src', contractTxId)
-  initialStateTx.addTag('Contract-Name', `${contractName}`)
-
-  // Sign initial state tx
-  await arweave.transactions.sign(initialStateTx, wallet)
-  const initialStateTxId = initialStateTx.id
-
-  // Deploy initial state tx
-  await arweave.transactions.post(initialStateTx)
-
   console.log('Contract TX ID', contractTxId)
-  console.log('Initial State TX ID', initialStateTxId)
+
+  if (!deployOnly && initialStateJSON) {
+    // Create initial state tx
+    const initialStateTx = await arweave.createTransaction(
+      { data: initialStateJSON },
+      wallet
+    )
+    initialStateTx.addTag('Protocol', 'ArtByCity')
+    initialStateTx.addTag('App-Name', APP_NAME)
+    initialStateTx.addTag('App-Version', APP_VERSION)
+    initialStateTx.addTag('Content-Type', 'application/json')
+    initialStateTx.addTag('Contract-Src', contractTxId)
+    initialStateTx.addTag('Contract-Name', `${contractName}`)
+
+    // Sign initial state tx
+    await arweave.transactions.sign(initialStateTx, wallet)
+    const initialStateTxId = initialStateTx.id
+
+    // Deploy initial state tx
+    await arweave.transactions.post(initialStateTx)
+
+    console.log('Initial State TX ID', initialStateTxId)
+  }
 }
 
 (async () => {
@@ -87,8 +99,12 @@ async function deployContract(contractName: string, keyfilePath: string) {
       || args.k
       || args.keyfile
       || process.env.KEYFILE
+    const deployOnly = args._[2]
+      || args.d
+      || args.deploy
+      || process.env.DEPLOY_ONLY === 'true'
 
-    await deployContract(contractName, keyfilePath)
+    await deployContract(contractName, keyfilePath, deployOnly)
   } catch (error) {
     console.error(error)
   }
