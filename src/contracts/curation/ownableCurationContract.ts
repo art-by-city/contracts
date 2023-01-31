@@ -1,7 +1,7 @@
 import { ContractInteraction, HandlerResult } from 'warp-contracts'
 import { ContractError } from '../../../environment'
 
-import { OnlyOwner, Ownable, PartialFunctionInput } from '../../util'
+import { OnlyOwner, OwnableState, PartialFunctionInput } from '../../util'
 import {
   AddItem,
   BaseCurationContract,
@@ -16,7 +16,7 @@ import {
   UnhideItem
 } from './baseCurationContract'
 
-export type OwnableCurationState = Ownable & BaseCurationState
+export type OwnableCurationState = OwnableState & BaseCurationState
 
 export type OwnableCurationInput = BaseCurationInput
 

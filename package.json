@@ -17,7 +17,7 @@
     "minimist": "^1.2.6",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4",
-    "warp-contracts": "^1.1.14"
+    "warp-contracts": "^1.2.45"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.20.0",
@@ -42,7 +42,8 @@
     "test": "mocha -r ts-node/register test/spec/**/*.ts",
     "test:e2e": "mocha -r ts-node/register test/e2e/**/*.ts",
     "getLatestState": "ts-node --project node.tsconfig.json scripts/getLatestState.ts",
-    "updateState": "ts-node --project node.tsconfig.json scripts/updateState.ts"
+    "updateState": "ts-node --project node.tsconfig.json scripts/updateState.ts",
+    "testEvolve": "ts-node --project node.tsconfig.json scripts/testEvolve.ts"
   },
   "repository": {
     "type": "git",

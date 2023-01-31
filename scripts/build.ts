@@ -6,11 +6,13 @@ import {
 } from '@rollup/plugin-babel'
 import cleanup from 'rollup-plugin-cleanup'
 import prettier from 'rollup-plugin-prettier'
+import { NodePath } from '@babel/core'
 
 const contracts: { [key: string]: string } = {
   'usernames': 'src/contracts/usernames/contract.ts',
   'collaborativeWhitelistCuration':
-    'src/contracts/curation/collaborativeWhitelistCurationContract.ts'
+    'src/contracts/curation/collaborativeWhitelistCurationContract.ts',
+  'atomicLicense': 'src/contracts/atomic-license/atomicLicense.ts'
 }
 
 const babelOpts: RollupBabelInputPluginOptions = {
@@ -22,6 +24,13 @@ const babelOpts: RollupBabelInputPluginOptions = {
     }],
     ['@babel/plugin-proposal-decorators', {
       'version': '2022-03'
+    }],
+    [{
+      visitor: {
+        ExportDeclaration(path: NodePath) {
+          path.remove()
+        }
+      }
     }]
   ]
 }
@@ -30,6 +39,9 @@ async function build() {
   for (const contract in contracts) {
     const bundle = await rollup({
       input: contracts[contract],
+      output: {
+        format: 'cjs'
+      },
       plugins: [
         typescript(),
         getBabelOutputPlugin(babelOpts),

@@ -34,3 +34,4 @@ export type ContractClassType<
 
 export * from './ownable'
 export * from './accessControl'
+export * from './evolvable'
