@@ -1,7 +1,9 @@
 import 'dotenv/config'
 import fs from 'fs/promises'
 import Arweave from 'arweave'
+import { JWKInterface } from 'arweave/node/lib/wallet'
 import minimist from 'minimist'
+import { defaultCacheOptions, Tags, Warp, WarpFactory } from 'warp-contracts'
 
 const arweaveConfig = {
   protocol: process.env.ARWEAVE_PROTOCOL || 'http',
@@ -10,13 +12,71 @@ const arweaveConfig = {
 }
 
 const arweave = new Arweave(arweaveConfig)
-
+let warp: Warp
+if (arweaveConfig.protocol === 'https') {
+  warp = WarpFactory.forMainnet({
+    ...defaultCacheOptions,
+    inMemory: true
+  })
+} else {
+  warp = WarpFactory.forLocal()
+}
 const APP_NAME = process.env.APP_NAME || 'ArtByCity-Development'
 const APP_VERSION = process.env.APP_VERSION || 'development'
 
-console.log('ARWEAVE CONFIG', arweaveConfig)
+export async function deployWarpContract(
+  contractPath: string,
+  contractName: string,
+  wallet: JWKInterface,
+  deployOnly: boolean = false,
+  initialState?: any
+) {
+  const src = (await fs.readFile(contractPath)).toString()
+  const initState = JSON.stringify(initialState)
+  const tags: Tags = [
+    { name: 'Protocol', value: 'ArtByCity' },
+    { name: 'App-Name', value: APP_NAME },
+    { name: 'App-Version', value: APP_VERSION },
+    { name: 'Contract-Name', value: contractName }
+  ]
 
-async function deployContract(
+  console.log(`Deploying ${contractName} contract`)
+
+  if (deployOnly) {
+    const srcTx = await warp.createSourceTx({ src }, wallet)
+
+    for (let i = 0; i < tags.length; i++) {
+      const { name, value } = tags[i]
+      srcTx.addTag(name, value)
+    }
+
+    // Sign contract tx
+    await arweave.transactions.sign(srcTx, wallet)
+
+    // Deploy contract tx
+    await arweave.transactions.post(srcTx)
+
+    console.log(`Deployed ${contractName} contract:`)
+    console.log(`\tContract Source TXID: ${srcTx.id}`)
+
+    return { srcTxId: srcTx.id }
+  } else {
+    const { contractTxId, srcTxId } = await warp.deploy({
+      wallet,
+      initState,
+      src,
+      tags
+    }, true)
+
+    console.log(`Deployed ${contractName} contract:`)
+    console.log(`\tContract Source TXID: ${srcTxId}`)
+    console.log(`\tInitial State TXID: ${contractTxId}`)
+
+    return { contractTxId, srcTxId }
+  }
+}
+
+export async function deployContract(
   contractName: string,
   keyfilePath: string,
   deployOnly: boolean = false
@@ -95,16 +155,21 @@ async function deployContract(
       || args.c
       || args.contract
       || process.env.CONTRACT
-    const keyfilePath = args._[1]
+    const contractPath = args._[1]
+      || args.p
+      || args['contract-path']
+      || process.env.CONTRACT_PATH
+    const keyfilePath = args._[2]
       || args.k
       || args.keyfile
       || process.env.KEYFILE
-    const deployOnly = args._[2]
+    const deployOnly = args._[3]
       || args.d
       || args.deploy
       || process.env.DEPLOY_ONLY === 'true'
 
-    await deployContract(contractName, keyfilePath, deployOnly)
+    const wallet = JSON.parse((await fs.readFile(keyfilePath)).toString())
+    await deployWarpContract(contractPath, contractName, wallet, deployOnly)
   } catch (error) {
     console.error(error)
   }

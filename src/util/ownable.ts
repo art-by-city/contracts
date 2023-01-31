@@ -2,11 +2,11 @@ import { ContractInteraction, HandlerResult } from 'warp-contracts'
 
 import { ContractError } from '../../environment'
 
-export type Ownable = {
+export type OwnableState = {
   owner: string
 }
 
-export const OnlyOwner = <S extends Ownable>(
+export const OnlyOwner = <S extends OwnableState>(
   _target: Object,
   _propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<

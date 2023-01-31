@@ -1,13 +1,7 @@
 import fs from 'fs/promises'
-import Arweave from 'arweave'
-import { WarpNodeFactory } from 'warp-contracts'
+import { WarpFactory } from 'warp-contracts'
 
-const arweave = new Arweave({
-  protocol: process.env.ARWEAVE_PROTOCOL || 'http',
-  host: process.env.ARWEAVE_HOST || 'localhost',
-  port: process.env.ARWEAVE_PORT || 1984
-})
-const smartweave = WarpNodeFactory.forTesting(arweave)
+const smartweave = WarpFactory.forLocal()
 
 async function updateState(contractId: string) {
   const wallet = JSON.parse(

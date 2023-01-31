@@ -1,23 +1,17 @@
-import Arweave from 'arweave'
-import { WarpNodeFactory } from 'warp-contracts'
+import { WarpFactory } from 'warp-contracts'
 
-const arweave = new Arweave({
-  protocol: process.env.ARWEAVE_PROTOCOL || 'http',
-  host: process.env.ARWEAVE_HOST || 'localhost',
-  port: process.env.ARWEAVE_PORT || 1984
-})
+const smartweave = WarpFactory.forLocal()
 
-const smartweave = WarpNodeFactory.forTesting(arweave)
-
-async function getLatestState(contractId: string) {
+export async function getLatestState(contractId: string) {
   const stateResult = await smartweave.contract(contractId).readState()
 
-  console.log(stateResult)
+  return stateResult.cachedValue.state
 }
 
 (async () => {
   try {
-    await getLatestState(process.env.TX_ID || '')
+    const state = await getLatestState(process.env.TX_ID || '')
+    console.log(state)
   } catch (error) {
     console.error(error.message)
   }

@@ -1,5 +1,5 @@
 import { ContractInteraction, HandlerResult } from 'warp-contracts'
-import { Ownable } from '.'
+import { OwnableState } from '.'
 
 import { ContractAssert, ContractError } from '../../environment'
 
@@ -47,7 +47,7 @@ export const OnlyRole = (role: string) => <
 }
 
 export const OnlyOwnerOrRole = (role: string) => <
-  S extends (Ownable & AccessControl<typeof role>)
+  S extends (OwnableState & AccessControl<typeof role>)
 >(
   _target: Object,
   _propertyKey: string | symbol,
