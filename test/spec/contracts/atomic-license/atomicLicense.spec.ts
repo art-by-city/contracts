@@ -1,6 +1,5 @@
 import 'mocha'
 import { expect } from 'chai'
-import { ContractInteraction } from 'warp-contracts'
 
 import { ContractError } from '../../../../environment'
 
@@ -9,6 +8,7 @@ import {
   AtomicLicenseState,
   AtomicLicenseInput
 } from '../../../../src/contracts/atomic-license'
+import { Interaction } from '../../../../src/util'
 
 const ALICE = '0xALICE'
 const BOB = '0xBOB'
@@ -31,7 +31,7 @@ describe('base atomic license', () => {
   })
 
   it('should require new contract src when evolving', () => {
-    const interaction: ContractInteraction<AtomicLicenseInput> = {
+    const interaction: Interaction<AtomicLicenseInput> = {
       caller: ALICE,
       input: {
         function: 'evolve'
@@ -42,7 +42,7 @@ describe('base atomic license', () => {
   })
 
   it('should prevent non-owner from evolving the contract', () => {
-    const interaction: ContractInteraction<AtomicLicenseInput> = {
+    const interaction: Interaction<AtomicLicenseInput> = {
       caller: BOB,
       input: {
         function: 'evolve'
@@ -53,7 +53,7 @@ describe('base atomic license', () => {
   })
 
   it('should allow the owner to evolve the contract', () => {
-    const interaction: ContractInteraction<AtomicLicenseInput> = {
+    const interaction: Interaction<AtomicLicenseInput> = {
       caller: ALICE,
       input: {
         function: 'evolve',

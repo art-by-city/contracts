@@ -1,12 +1,13 @@
-import {
-  ContractInteraction,
-  EvolveState,
-  HandlerResult
-} from 'warp-contracts'
+import { EvolveState, HandlerResult } from 'warp-contracts'
 
 import { ContractAssert } from '../../environment'
-import { Constructor, ContractFunctionInput, PartialFunctionInput } from './'
-import { OnlyOwner, OwnableState } from './ownable'
+import {
+  Constructor,
+  ContractFunctionInput,
+  Interaction,
+  PartialFunctionInput
+} from './'
+import { OwnableState } from './ownable'
 
 export type EvolvableState = Partial<EvolveState> & OwnableState
 export type EvolvableResult = any
@@ -22,7 +23,7 @@ export function Evolvable<Contract extends Constructor>(
   return class EvolvableContract extends ContractBase {
     evolve(
       state: EvolvableState,
-      action: ContractInteraction<PartialFunctionInput<Evolve>>
+      action: Interaction<PartialFunctionInput<Evolve>>
     ): HandlerResult<EvolvableState, EvolvableResult> {
       const { input, caller } = action
 

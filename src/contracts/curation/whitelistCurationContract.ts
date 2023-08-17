@@ -1,9 +1,10 @@
-import { ContractInteraction, HandlerResult } from 'warp-contracts'
+import { HandlerResult } from 'warp-contracts'
 import { ContractAssert, ContractError } from '../../../environment'
 
 import {
   Constructor,
   ContractFunctionInput,
+  Interaction,
   OnlyOwner,
   PartialFunctionInput
 } from '../../util'
@@ -49,7 +50,7 @@ export function WithWhitelist<Contract extends Constructor>(
   return class WithWhitelist extends BaseContract {
     addToWhitelist(
       state: WhitelistCurationState,
-      action: ContractInteraction<PartialFunctionInput<AddToWhitelist>>
+      action: Interaction<PartialFunctionInput<AddToWhitelist>>
     ): HandlerResult<WhitelistCurationState, WhitelistCurationResult> {
       const address = action.input.address
 
@@ -67,7 +68,7 @@ export function WithWhitelist<Contract extends Constructor>(
 
     removeFromWhitelist(
       state: WhitelistCurationState,
-      action: ContractInteraction<PartialFunctionInput<RemoveFromWhitelist>>
+      action: Interaction<PartialFunctionInput<RemoveFromWhitelist>>
     ): HandlerResult<WhitelistCurationState, WhitelistCurationResult> {
       const address = action.input.address
 
@@ -100,7 +101,7 @@ export class OwnableWhitelistCurationContract
   @OnlyOwner
   addToWhitelist(
     state: OwnableWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<AddToWhitelist>>
+    action: Interaction<PartialFunctionInput<AddToWhitelist>>
   ): HandlerResult<OwnableWhitelistCurationState, WhitelistCurationResult> {
     // TODO -> fix type cast
     return super.addToWhitelist(
@@ -112,7 +113,7 @@ export class OwnableWhitelistCurationContract
   @OnlyOwner
   removeFromWhitelist(
     state: OwnableWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<RemoveFromWhitelist>>
+    action: Interaction<PartialFunctionInput<RemoveFromWhitelist>>
   ): HandlerResult<OwnableWhitelistCurationState, WhitelistCurationResult> {
     // TODO -> fix type cast
     return super.removeFromWhitelist(
@@ -124,7 +125,7 @@ export class OwnableWhitelistCurationContract
 
 export default function handle(
   state: OwnableWhitelistCurationState,
-  action: ContractInteraction<WhitelistCurationInput>
+  action: Interaction<WhitelistCurationInput>
 ): WhitelistCurationHandlerResult {
   const contract = new OwnableWhitelistCurationContract()
   const caller = action.caller

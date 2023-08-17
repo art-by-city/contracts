@@ -1,10 +1,11 @@
-import { ContractInteraction, HandlerResult } from 'warp-contracts'
+import { HandlerResult } from 'warp-contracts'
 
 import { ContractError } from '../../../environment'
 import {
   Evolvable,
   EvolvableState,
   Evolve,
+  Interaction,
   OwnableState,
   PartialFunctionInput
 } from '../../util'
@@ -16,7 +17,7 @@ export class AtomicLicenseContract extends Evolvable(Object) {}
 
 export default function handle(
   state: AtomicLicenseState,
-  action: ContractInteraction<AtomicLicenseInput>
+  action: Interaction<AtomicLicenseInput>
 ): HandlerResult<AtomicLicenseState, AtomicLicenseResult> {
   const contract = new AtomicLicenseContract()
   const caller = action.caller

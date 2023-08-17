@@ -1,6 +1,5 @@
 import 'mocha'
 import { expect } from 'chai'
-import { ContractInteraction } from 'warp-contracts'
 
 import { ContractError } from '../../../../environment'
 import {
@@ -8,6 +7,7 @@ import {
   CollaborativeWhitelistCurationInput,
   CollaborativeWhitelistCurationState
 } from '../../../../src/contracts/curation'
+import { Interaction } from '../../../../src/util'
 
 const CONTRACT_OWNER = '0xCONTRACT-OWNER'
 const ALICE = '0xALICE'
@@ -43,7 +43,7 @@ describe('collaborative whitelist curation contract', () => {
    * Curator Management
    */
   it('should allow owner to add curators', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -60,7 +60,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from adding curators', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -74,7 +74,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow owner to remove curators', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -98,7 +98,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from removing curators', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -121,7 +121,7 @@ describe('collaborative whitelist curation contract', () => {
    * Title
    */
   it('should allow owner to set title', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -137,7 +137,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to set title', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -159,7 +159,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from setting title', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -176,7 +176,7 @@ describe('collaborative whitelist curation contract', () => {
    * Metadata
    */
   it('should allow owner to set metadata', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -192,7 +192,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to set metadata', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -214,7 +214,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from setting metadata', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -231,7 +231,7 @@ describe('collaborative whitelist curation contract', () => {
    * Pinned items
    */
   it('should allow owner to add items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -248,7 +248,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to add items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -271,7 +271,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from adding items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -285,7 +285,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow owner to remove items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -310,7 +310,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to remove items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -336,7 +336,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from removing items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -356,7 +356,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow owner to set items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -374,7 +374,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to set items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -398,7 +398,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from setting items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -415,7 +415,7 @@ describe('collaborative whitelist curation contract', () => {
    * Hidden items
    */
   it('should allow owner to hide items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -432,7 +432,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to hide items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -455,7 +455,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from hiding items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -469,7 +469,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow owner to unhide items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -494,7 +494,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to unhide items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -520,7 +520,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from unhiding items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -540,7 +540,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow owner to set hidden items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -558,7 +558,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to set hidden items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -582,7 +582,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from setting hidden items', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -605,7 +605,7 @@ describe('collaborative whitelist curation contract', () => {
    * Whitelist Management
    */
   it('should allow owner to add to whitelist', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -622,7 +622,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to add to whitelist', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -645,7 +645,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from adding to whitelist', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,
@@ -659,7 +659,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow owner to remove from whitelist', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: CONTRACT_OWNER,
@@ -683,7 +683,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should allow curators to remove from whitelist', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: ALICE,
@@ -708,7 +708,7 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from removing from whitelist', () => {
-    const interaction: ContractInteraction<
+    const interaction: Interaction<
       CollaborativeWhitelistCurationInput
     > = {
       caller: BOB,

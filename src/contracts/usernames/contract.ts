@@ -1,6 +1,7 @@
-import { ContractInteraction, HandlerResult } from 'warp-contracts'
+import { HandlerResult } from 'warp-contracts'
 
 import { ContractAssert, ContractError } from '../../../environment'
+import { Interaction } from '../../../src/util'
 
 export interface UsernamesContractState {
   usernames: {
@@ -21,7 +22,7 @@ export type UsernamesContractInput = {
 export type UsernamesContractResult = any
 export function handle(
   state: UsernamesContractState,
-  action: ContractInteraction<UsernamesContractInput>
+  action: Interaction<UsernamesContractInput>
 ): HandlerResult<UsernamesContractState, UsernamesContractResult> {
   if (action.input.function === 'register') {
     const username = action.input.username

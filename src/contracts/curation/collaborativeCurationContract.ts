@@ -1,10 +1,11 @@
-import { ContractInteraction, HandlerResult } from 'warp-contracts'
+import { HandlerResult } from 'warp-contracts'
 
 import { ContractAssert, ContractError } from '../../../environment'
 import {
   AccessControl,
   Constructor,
   ContractFunctionInput,
+  Interaction,
   OnlyOwner,
   OnlyOwnerOrRole,
   PartialFunctionInput
@@ -53,7 +54,7 @@ export function Collaborative<Contract extends Constructor>(
   return class Collaborate extends ContractBase {
     addCurator(
       state: CollaborativeCurationState,
-      action: ContractInteraction<PartialFunctionInput<AddCurator>>
+      action: Interaction<PartialFunctionInput<AddCurator>>
     ): HandlerResult<CollaborativeCurationState, CollaborativeCurationResult> {
       const address = action.input.address
 
@@ -71,7 +72,7 @@ export function Collaborative<Contract extends Constructor>(
 
     removeCurator(
       state: CollaborativeCurationState,
-      action: ContractInteraction<PartialFunctionInput<RemoveCurator>>
+      action: Interaction<PartialFunctionInput<RemoveCurator>>
     ): HandlerResult<CollaborativeCurationState, CollaborativeCurationResult> {
       const address = action.input.address
 
@@ -98,7 +99,7 @@ export class CollaborativeCurationContract
   @OnlyOwner
   addCurator(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<AddCurator>>
+    action: Interaction<PartialFunctionInput<AddCurator>>
   ): CollaborativeCurationHandlerResult {
     return super.addCurator(state, action)
   }
@@ -106,7 +107,7 @@ export class CollaborativeCurationContract
   @OnlyOwner
   removeCurator(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<RemoveCurator>>
+    action: Interaction<PartialFunctionInput<RemoveCurator>>
   ): CollaborativeCurationHandlerResult {
     return super.removeCurator(state, action)
   }
@@ -114,7 +115,7 @@ export class CollaborativeCurationContract
   @OnlyOwnerOrRole('curator')
   setTitle(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<SetTitle>>
+    action: Interaction<PartialFunctionInput<SetTitle>>
   ): CollaborativeCurationHandlerResult {
     return super.setTitle(state, action)
   }
@@ -122,7 +123,7 @@ export class CollaborativeCurationContract
   @OnlyOwnerOrRole('curator')
   setMetadata(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<SetMetadata>>
+    action: Interaction<PartialFunctionInput<SetMetadata>>
   ): CollaborativeCurationHandlerResult {
     return super.setMetadata(state, action)
   }
@@ -130,7 +131,7 @@ export class CollaborativeCurationContract
   @OnlyOwnerOrRole('curator')
   addItem(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<AddItem>>
+    action: Interaction<PartialFunctionInput<AddItem>>
   ): CollaborativeCurationHandlerResult {
     return super.addItem(state, action)
   }
@@ -138,7 +139,7 @@ export class CollaborativeCurationContract
   @OnlyOwnerOrRole('curator')
   removeItem(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<RemoveItem>>
+    action: Interaction<PartialFunctionInput<RemoveItem>>
   ): CollaborativeCurationHandlerResult {
     return super.removeItem(state, action)
   }
@@ -146,7 +147,7 @@ export class CollaborativeCurationContract
   @OnlyOwnerOrRole('curator')
   setItems(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<SetItems>>
+    action: Interaction<PartialFunctionInput<SetItems>>
   ): CollaborativeCurationHandlerResult {
     return super.setItems(state, action)
   }
@@ -154,7 +155,7 @@ export class CollaborativeCurationContract
   @OnlyOwnerOrRole('curator')
   hideItem(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<HideItem>>
+    action: Interaction<PartialFunctionInput<HideItem>>
   ): CollaborativeCurationHandlerResult {
     return super.hideItem(state, action)
   }
@@ -162,7 +163,7 @@ export class CollaborativeCurationContract
   @OnlyOwnerOrRole('curator')
   unhideItem(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<UnhideItem>>
+    action: Interaction<PartialFunctionInput<UnhideItem>>
   ): CollaborativeCurationHandlerResult {
     return super.unhideItem(state, action)
   }
@@ -170,7 +171,7 @@ export class CollaborativeCurationContract
   @OnlyOwnerOrRole('curator')
   setHiddenItems(
     state: CollaborativeCurationState,
-    action: ContractInteraction<PartialFunctionInput<SetHiddenItems>>
+    action: Interaction<PartialFunctionInput<SetHiddenItems>>
   ): CollaborativeCurationHandlerResult {
     return super.setHiddenItems(state, action)
   }
@@ -178,7 +179,7 @@ export class CollaborativeCurationContract
 
 export default function handle(
   state: CollaborativeCurationState,
-  action: ContractInteraction<CollaborativeCurationInput>
+  action: Interaction<CollaborativeCurationInput>
 ): CollaborativeCurationHandlerResult {
   const contract = new CollaborativeCurationContract()
   const caller = action.caller

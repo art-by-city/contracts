@@ -17,6 +17,9 @@ export type AnyContractFunctionInput = {
 export type PartialFunctionInput<T extends ContractFunctionInput> =
   Partial<T> & Pick<T, 'function'>
 
+export type Interaction<T extends ContractFunctionInput> =
+  Omit<ContractInteraction<T>, 'interactionType'>
+
 export type NarrowContractInput<Input, func> = Input extends { function: func }
   ? Input
   : never

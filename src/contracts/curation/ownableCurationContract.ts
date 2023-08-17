@@ -1,7 +1,7 @@
-import { ContractInteraction, HandlerResult } from 'warp-contracts'
+import { HandlerResult } from 'warp-contracts'
 import { ContractError } from '../../../environment'
 
-import { OnlyOwner, OwnableState, PartialFunctionInput } from '../../util'
+import { Interaction, OnlyOwner, OwnableState, PartialFunctionInput } from '../../util'
 import {
   AddItem,
   BaseCurationContract,
@@ -28,7 +28,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
   @OnlyOwner
   setTitle(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<SetTitle>>
+    action: Interaction<PartialFunctionInput<SetTitle>>
   ): HandlerResult<State, OwnableCurationResult> {
     return super.setTitle(state, action)
   }
@@ -36,7 +36,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
   @OnlyOwner
   setMetadata(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<SetMetadata>>
+    action: Interaction<PartialFunctionInput<SetMetadata>>
   ): HandlerResult<State, OwnableCurationResult> {
     return super.setMetadata(state, action)
   }
@@ -44,7 +44,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
   @OnlyOwner
   addItem(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<AddItem>>
+    action: Interaction<PartialFunctionInput<AddItem>>
   ): HandlerResult<State, OwnableCurationResult> {
     return super.addItem(state, action)
   }
@@ -52,7 +52,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
   @OnlyOwner
   removeItem(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<RemoveItem>>
+    action: Interaction<PartialFunctionInput<RemoveItem>>
   ): HandlerResult<State, OwnableCurationResult> {
     return super.removeItem(state, action)
   }
@@ -60,7 +60,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
   @OnlyOwner
   setItems(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<SetItems>>
+    action: Interaction<PartialFunctionInput<SetItems>>
   ): HandlerResult<State, OwnableCurationResult> {
     return super.setItems(state, action)
   }
@@ -68,7 +68,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
   @OnlyOwner
   hideItem(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<HideItem>>
+    action: Interaction<PartialFunctionInput<HideItem>>
   ): HandlerResult<State, OwnableCurationResult> {
     return super.hideItem(state, action)
   }
@@ -76,7 +76,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
   @OnlyOwner
   unhideItem(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<UnhideItem>>
+    action: Interaction<PartialFunctionInput<UnhideItem>>
   ): HandlerResult<State, OwnableCurationResult> {
     return super.unhideItem(state, action)
   }
@@ -84,7 +84,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
   @OnlyOwner
   setHiddenItems(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<SetHiddenItems>>
+    action: Interaction<PartialFunctionInput<SetHiddenItems>>
   ): HandlerResult<State, OwnableCurationResult> {
     return super.setHiddenItems(state, action)
   }
@@ -92,7 +92,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
 
 export default function handle(
   state: OwnableCurationState,
-  action: ContractInteraction<OwnableCurationInput>
+  action: Interaction<OwnableCurationInput>
 ): HandlerResult<OwnableCurationState, OwnableCurationResult> {
   const contract = new OwnableCurationContract()
   const caller = action.caller
