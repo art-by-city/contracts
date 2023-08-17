@@ -1,6 +1,5 @@
 import 'mocha'
 import { expect } from 'chai'
-import { ContractInteraction } from 'warp-contracts'
 
 import {
   handle,
@@ -8,6 +7,7 @@ import {
   UsernamesContractState
 } from '../../../../src/contracts/usernames/contract'
 import { ContractError } from '../../../../environment'
+import { Interaction } from '../../../../src/util'
 
 const MOCK_ADDRESS_1 = '0xMOCK-ADDRESS-1'
 const MOCK_ADDRESS_2 = '0xMOCK-ADDRESS-2'
@@ -29,7 +29,7 @@ describe('usernames contract', () => {
     })
 
     it('registers usernames', () => {
-      const interaction: ContractInteraction<UsernamesContractInput> = {
+      const interaction: Interaction<UsernamesContractInput> = {
         caller: MOCK_ADDRESS_1,
         input: {
           function: 'register',
@@ -44,7 +44,7 @@ describe('usernames contract', () => {
     })
 
     it('should not allow a username to be registered twice', () => {
-      const interaction: ContractInteraction<UsernamesContractInput> = {
+      const interaction: Interaction<UsernamesContractInput> = {
         caller: MOCK_ADDRESS_1,
         input: {
           function: 'register',
@@ -54,7 +54,7 @@ describe('usernames contract', () => {
 
       const { state } = handle(initState, interaction)
 
-      const anotherInteraction: ContractInteraction<UsernamesContractInput> = {
+      const anotherInteraction: Interaction<UsernamesContractInput> = {
         caller: MOCK_ADDRESS_2,
         input: {
           function: 'register',
@@ -68,7 +68,7 @@ describe('usernames contract', () => {
     })
 
     it('should allow users to update their username', () => {
-      const interaction: ContractInteraction<UsernamesContractInput> = {
+      const interaction: Interaction<UsernamesContractInput> = {
         caller: MOCK_ADDRESS_1,
         input: {
           function: 'register',
@@ -78,7 +78,7 @@ describe('usernames contract', () => {
 
       let { state } = handle(initState, interaction)
 
-      const anotherInteraction: ContractInteraction<UsernamesContractInput> = {
+      const anotherInteraction: Interaction<UsernamesContractInput> = {
         caller: MOCK_ADDRESS_1,
         input: {
           function: 'register',
@@ -94,7 +94,7 @@ describe('usernames contract', () => {
 
     describe('username validation', () => {
       it('should be a string', () => {
-        const interaction: ContractInteraction<UsernamesContractInput> = {
+        const interaction: Interaction<UsernamesContractInput> = {
           caller: MOCK_ADDRESS_1,
           input: {
             function: 'register',
@@ -108,7 +108,7 @@ describe('usernames contract', () => {
       })
 
       it('should be at least 2 characters', () => {
-        const interaction: ContractInteraction<UsernamesContractInput> = {
+        const interaction: Interaction<UsernamesContractInput> = {
           caller: MOCK_ADDRESS_1,
           input: {
             function: 'register',
@@ -122,7 +122,7 @@ describe('usernames contract', () => {
       })
 
       it('should be no more than 64 characters', () => {
-        const interaction: ContractInteraction<UsernamesContractInput> = {
+        const interaction: Interaction<UsernamesContractInput> = {
           caller: MOCK_ADDRESS_1,
           input: {
             function: 'register',
@@ -136,7 +136,7 @@ describe('usernames contract', () => {
       })
 
       it('should only contain lowercase letters, numbers, periods, & underscores', () => {
-        const symbolInteraction: ContractInteraction<UsernamesContractInput> = {
+        const symbolInteraction: Interaction<UsernamesContractInput> = {
           caller: MOCK_ADDRESS_1,
           input: {
             function: 'register',
@@ -148,7 +148,7 @@ describe('usernames contract', () => {
           () => { handle(initState, symbolInteraction) }
         ).to.throw(ContractError)
 
-        const caseInteraction: ContractInteraction<UsernamesContractInput> = {
+        const caseInteraction: Interaction<UsernamesContractInput> = {
           caller: MOCK_ADDRESS_1,
           input: {
             function: 'register',
@@ -169,7 +169,7 @@ describe('usernames contract', () => {
     })
 
     it('should allow users to release their username', () => {
-      const interaction: ContractInteraction<UsernamesContractInput> = {
+      const interaction: Interaction<UsernamesContractInput> = {
         caller: MOCK_ADDRESS_1,
         input: {
           function: 'release'

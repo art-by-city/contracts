@@ -7,8 +7,8 @@ import {
   Contract,
   LoggerFactory,
   Warp,
-  WarpNodeFactory
+  WarpFactory
 } from 'warp-contracts'
 import { expect } from 'chai'
 
-
+// TODO -> tests :)

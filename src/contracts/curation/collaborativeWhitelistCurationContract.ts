@@ -1,8 +1,9 @@
-import { ContractInteraction, HandlerResult } from 'warp-contracts'
+import { HandlerResult } from 'warp-contracts'
 
 import { ContractError } from '../../../environment'
 import {
   AccessControl,
+  Interaction,
   OnlyOwner,
   OnlyOwnerOrRole,
   PartialFunctionInput
@@ -48,7 +49,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwner
   addCurator(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<AddCurator>>
+    action: Interaction<PartialFunctionInput<AddCurator>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.addCurator(
@@ -60,7 +61,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwner
   removeCurator(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<RemoveCurator>>
+    action: Interaction<PartialFunctionInput<RemoveCurator>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.removeCurator(
@@ -72,7 +73,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   setTitle(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<SetTitle>>
+    action: Interaction<PartialFunctionInput<SetTitle>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.setTitle(
@@ -84,7 +85,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   setMetadata(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<SetMetadata>>
+    action: Interaction<PartialFunctionInput<SetMetadata>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.setMetadata(
@@ -96,7 +97,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   addItem(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<AddItem>>
+    action: Interaction<PartialFunctionInput<AddItem>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.addItem(
@@ -108,7 +109,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   removeItem(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<RemoveItem>>
+    action: Interaction<PartialFunctionInput<RemoveItem>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.removeItem(
@@ -120,7 +121,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   setItems(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<SetItems>>
+    action: Interaction<PartialFunctionInput<SetItems>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.setItems(
@@ -132,7 +133,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   hideItem(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<HideItem>>
+    action: Interaction<PartialFunctionInput<HideItem>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.hideItem(
@@ -144,7 +145,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   unhideItem(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<UnhideItem>>
+    action: Interaction<PartialFunctionInput<UnhideItem>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.unhideItem(
@@ -156,7 +157,7 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   setHiddenItems(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<SetHiddenItems>>
+    action: Interaction<PartialFunctionInput<SetHiddenItems>>
   ): CollaborativeWhitelistCurationHandlerResult {
     // TODO -> fix type cast
     return super.setHiddenItems(
@@ -168,31 +169,25 @@ export class CollaborativeWhitelistCurationContract
   @OnlyOwnerOrRole('curator')
   addToWhitelist(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<AddToWhitelist>>
+    action: Interaction<PartialFunctionInput<AddToWhitelist>>
   ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.addToWhitelist(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+    // @ts-ignore
+    return super.addToWhitelist(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
   removeFromWhitelist(
     state: CollaborativeWhitelistCurationState,
-    action: ContractInteraction<PartialFunctionInput<RemoveFromWhitelist>>
+    action: Interaction<PartialFunctionInput<RemoveFromWhitelist>>
   ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.removeFromWhitelist(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+    // @ts-ignore
+    return super.removeFromWhitelist(state, action)
   }
 }
 
 export default function handle(
   state: CollaborativeWhitelistCurationState,
-  action: ContractInteraction<CollaborativeWhitelistCurationInput>
+  action: Interaction<CollaborativeWhitelistCurationInput>
 ): CollaborativeWhitelistCurationHandlerResult {
   const contract = new CollaborativeWhitelistCurationContract()
   const caller = action.caller

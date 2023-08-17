@@ -7,9 +7,11 @@ import {
   Contract,
   LoggerFactory,
   Warp,
-  WarpNodeFactory
+  WarpFactory
 } from 'warp-contracts'
+import { DeployPlugin } from 'warp-contracts-plugin-deploy'
 import { expect } from 'chai'
+import 'mocha'
 
 import {
   UsernamesContractState
@@ -20,7 +22,7 @@ const ARLOCAL_PORT = Number.parseInt(process.env.ARLOCAL_PORT || '1984')
 describe('usernames contract', function() {
   let arlocal: ArLocal,
       arweave: Arweave,
-      smartweave: Warp,
+      warp: Warp,
       wallet: JWKInterface,
       walletAddress: string,
       anotherWallet: JWKInterface,
@@ -48,7 +50,7 @@ describe('usernames contract', function() {
 
     LoggerFactory.INST.logLevel('error')
 
-    smartweave = WarpNodeFactory.forTesting(arweave)
+    warp = WarpFactory.forLocal().use(new DeployPlugin())
 
     contractSrc = (await fs.readFile(
       path.join(__dirname, '../../../dist/contracts/usernames/contract.js')
@@ -74,16 +76,16 @@ describe('usernames contract', function() {
     anotherWalletAddress = await arweave.wallets.jwkToAddress(anotherWallet)
     await arweave.api.get(`/mint/${anotherWalletAddress}/184717954005648`)
 
-    const { contractTxId } = await smartweave.createContract.deploy({
+    const { contractTxId } = await warp.deploy({
       wallet,
       initState: initialStateJson,
       src: contractSrc
     })
 
-    contract = smartweave.contract<UsernamesContractState>(contractTxId)
+    contract = warp.contract<UsernamesContractState>(contractTxId)
     contract.connect(wallet)
 
-    anotherContractHandle = smartweave.contract<UsernamesContractState>(
+    anotherContractHandle = warp.contract<UsernamesContractState>(
       contractTxId
     )
     anotherContractHandle.connect(anotherWallet)
@@ -92,7 +94,7 @@ describe('usernames contract', function() {
   })
 
   it('should match initial state after deployment', async () => {
-    const { state: { usernames } } = await contract.readState()
+    const { cachedValue: { state: { usernames } } } = await contract.readState()
 
     expect(usernames).to.be.empty
   })
@@ -102,7 +104,7 @@ describe('usernames contract', function() {
 
     await contract.writeInteraction({ function: 'register', username })
     await mine()
-    const { state: { usernames } } = await contract.readState()
+    const { cachedValue: { state: { usernames } } } = await contract.readState()
 
     expect(usernames).to.not.be.empty
     expect(usernames[walletAddress]).to.equal(username)
@@ -114,7 +116,7 @@ describe('usernames contract', function() {
     await contract.writeInteraction({ function: 'register', username })
     await mine()
 
-    const { state: { usernames } } = await contract.readState()
+    const { cachedValue: { state: { usernames } } } = await contract.readState()
     expect(usernames).to.be.empty
   })
 
@@ -130,10 +132,9 @@ describe('usernames contract', function() {
     await contract.writeInteraction({
       function: 'register',
       username: username2
-    }, undefined, undefined, true)
-    // NB: test fails without forcing strict mode on above writeInteraction ?
+    })
     await mine()
-    const { state: { usernames } } = await contract.readState()
+    const { cachedValue: { state: { usernames } } } = await contract.readState()
 
     expect(usernames[walletAddress]).to.equal(username2)
   })
@@ -151,7 +152,7 @@ describe('usernames contract', function() {
       username
     })
     await mine()
-    const { state: { usernames } } = await contract.readState()
+    const { cachedValue: { state: { usernames } } } = await contract.readState()
 
     expect(usernames[walletAddress]).to.equal(username)
     expect(usernames[anotherWalletAddress]).to.be.undefined
@@ -165,13 +166,13 @@ describe('usernames contract', function() {
       username
     })
     await mine()
-    let { state: { usernames } } = await contract.readState()
+    let { cachedValue: { state: { usernames } } } = await contract.readState()
 
     expect(usernames[walletAddress]).to.equal(username)
 
     await contract.writeInteraction({ function: 'release' })
     await mine()
-    ;({ state: { usernames } } = await contract.readState())
+    ;({ cachedValue: { state: { usernames } } } = await contract.readState())
 
     expect(usernames[walletAddress]).to.be.undefined
   })

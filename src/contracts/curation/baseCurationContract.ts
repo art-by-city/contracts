@@ -1,7 +1,7 @@
-import { ContractInteraction, HandlerResult } from 'warp-contracts'
+import { HandlerResult } from 'warp-contracts'
 
 import { ContractAssert, ContractError } from '../../../environment'
-import { ContractFunctionInput, PartialFunctionInput } from '../../util'
+import { ContractFunctionInput, Interaction, PartialFunctionInput } from '../../util'
 
 export type BaseCurationMetadata = {
   [key: string]: any
@@ -69,7 +69,7 @@ export type BaseCurationResult = any
 export class BaseCurationContract<State extends BaseCurationState> {
   setTitle(
     state: State,
-    { input }: ContractInteraction<PartialFunctionInput<SetTitle>>
+    { input }: Interaction<PartialFunctionInput<SetTitle>>
   ): HandlerResult<State, BaseCurationResult> {
     ContractAssert(typeof input.title === 'string', 'Title must be a string')
 
@@ -80,7 +80,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
   setMetadata(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<SetMetadata>>
+    action: Interaction<PartialFunctionInput<SetMetadata>>
   ): HandlerResult<State, BaseCurationResult> {
     ContractAssert(
       typeof action.input.metadata === 'object'
@@ -95,7 +95,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
   addItem(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<AddItem>>
+    action: Interaction<PartialFunctionInput<AddItem>>
   ): HandlerResult<State, BaseCurationResult> {
     ContractAssert(
       typeof action.input.item === 'string',
@@ -114,7 +114,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
   removeItem(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<RemoveItem>>
+    action: Interaction<PartialFunctionInput<RemoveItem>>
   ): HandlerResult<State, BaseCurationResult> {
     ContractAssert(
       typeof action.input.item === 'string',
@@ -134,7 +134,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
   setItems(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<SetItems>>
+    action: Interaction<PartialFunctionInput<SetItems>>
   ): HandlerResult<State, BaseCurationResult> {
     ContractAssert(
       Array.isArray(action.input.items),
@@ -153,7 +153,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
   hideItem(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<HideItem>>
+    action: Interaction<PartialFunctionInput<HideItem>>
   ): HandlerResult<State, BaseCurationResult> {
     ContractAssert(
       typeof action.input.item === 'string',
@@ -172,7 +172,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
   unhideItem(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<UnhideItem>>
+    action: Interaction<PartialFunctionInput<UnhideItem>>
   ): HandlerResult<State, BaseCurationResult> {
     ContractAssert(
       typeof action.input.item === 'string',
@@ -192,7 +192,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
   setHiddenItems(
     state: State,
-    action: ContractInteraction<PartialFunctionInput<SetHiddenItems>>
+    action: Interaction<PartialFunctionInput<SetHiddenItems>>
   ): HandlerResult<State, BaseCurationResult> {
     ContractAssert(
       Array.isArray(action.input.items),
@@ -212,7 +212,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
 export default function handle(
   state: BaseCurationState,
-  action: ContractInteraction<BaseCurationInput>
+  action: Interaction<BaseCurationInput>
 ): HandlerResult<BaseCurationState, BaseCurationResult> {
   const contract = new BaseCurationContract()
   const caller = action.caller
