@@ -2,222 +2,134 @@ import { HandlerResult } from 'warp-contracts'
 
 import { ContractError } from '../../../environment'
 import {
-  AccessControl,
+  AccessControlState,
+  ContractFunctionInput,
   Interaction,
   OnlyOwner,
-  OnlyOwnerOrRole,
-  PartialFunctionInput
+  OnlyOwnerOrRole
 } from '../../util'
 import {
-  AddCurator,
-  AddItem,
-  AddToWhitelist,
   Collaborative,
-  CollaborativeCurationInput,
-  HideItem,
-  OwnableCurationState,
-  RemoveCurator,
-  RemoveFromWhitelist,
-  RemoveItem,
-  SetHiddenItems,
-  SetItems,
-  SetMetadata,
-  SetTitle,
-  UnhideItem,
+  CollaborativeCurationState,
   WhitelistCurationContract,
-  WhitelistCurationInput,
   WhitelistCurationState
 } from './'
 
-export type CollaborativeWhitelistCurationState = OwnableCurationState
-  & WhitelistCurationState
-  & AccessControl<'curator'>
-
-export type CollaborativeWhitelistCurationInput = CollaborativeCurationInput
-  | WhitelistCurationInput
+export type CollaborativeWhitelistCurationState =
+  CollaborativeCurationState & WhitelistCurationState
 
 export type CollaborativeWhitelistCurationResult = any
-
-export type CollaborativeWhitelistCurationHandlerResult = HandlerResult<
-  CollaborativeWhitelistCurationState,
-  CollaborativeWhitelistCurationResult
->
 
 export class CollaborativeWhitelistCurationContract
   extends Collaborative(WhitelistCurationContract)
 {
   @OnlyOwner
-  addCurator(
-    state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<AddCurator>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.addCurator(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+  addCurator(state: CollaborativeWhitelistCurationState, action: Interaction) {
+    return super.addCurator(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwner
   removeCurator(
     state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<RemoveCurator>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.removeCurator(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+    action: Interaction
+  ) {
+    return super.removeCurator(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
-  setTitle(
-    state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<SetTitle>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.setTitle(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+  setTitle(state: CollaborativeWhitelistCurationState, action: Interaction) {
+    return super.setTitle(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
-  setMetadata(
-    state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<SetMetadata>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.setMetadata(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+  setMetadata(state: CollaborativeWhitelistCurationState, action: Interaction) {
+    return super.setMetadata(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
-  addItem(
-    state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<AddItem>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.addItem(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+  addItem(state: CollaborativeWhitelistCurationState, action: Interaction) {
+    return super.addItem(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
-  removeItem(
-    state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<RemoveItem>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.removeItem(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+  removeItem(state: CollaborativeWhitelistCurationState, action: Interaction) {
+    return super.removeItem(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
-  setItems(
-    state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<SetItems>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.setItems(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+  setItems(state: CollaborativeWhitelistCurationState, action: Interaction) {
+    return super.setItems(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
-  hideItem(
-    state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<HideItem>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.hideItem(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+  hideItem(state: CollaborativeWhitelistCurationState, action: Interaction) {
+    return super.hideItem(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
-  unhideItem(
-    state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<UnhideItem>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.unhideItem(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+  unhideItem(state: CollaborativeWhitelistCurationState, action: Interaction) {
+    return super.unhideItem(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
   setHiddenItems(
     state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<SetHiddenItems>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // TODO -> fix type cast
-    return super.setHiddenItems(
-      state,
-      action
-    ) as CollaborativeWhitelistCurationHandlerResult
+    action: Interaction
+  ) {
+    return super.setHiddenItems(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
   addToWhitelist(
     state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<AddToWhitelist>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // @ts-ignore
-    return super.addToWhitelist(state, action)
+    action: Interaction
+  ) {
+    return super.addToWhitelist(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')
   removeFromWhitelist(
     state: CollaborativeWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<RemoveFromWhitelist>>
-  ): CollaborativeWhitelistCurationHandlerResult {
-    // @ts-ignore
-    return super.removeFromWhitelist(state, action)
+    action: Interaction
+  ) {
+    return super.removeFromWhitelist(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 }
 
 export default function handle(
   state: CollaborativeWhitelistCurationState,
-  action: Interaction<CollaborativeWhitelistCurationInput>
-): CollaborativeWhitelistCurationHandlerResult {
+  action: Interaction<ContractFunctionInput>
+): HandlerResult<
+  CollaborativeWhitelistCurationState,
+  CollaborativeWhitelistCurationResult
+> {
   const contract = new CollaborativeWhitelistCurationContract()
-  const caller = action.caller
-  const input = action.input
 
-  switch (input.function) {
+  switch (action.input.function) {
     case 'addCurator':
-      return contract.addCurator(state, { caller, input })
+      return contract.addCurator(state, action)
     case 'removeCurator':
-      return contract.removeCurator(state, { caller, input })
+      return contract.removeCurator(state, action)
     case 'setTitle':
-      return contract.setTitle(state, { caller, input })
+      return contract.setTitle(state, action)
     case 'setMetadata':
-      return contract.setMetadata(state, { caller, input })
+      return contract.setMetadata(state, action)
     case 'addItem':
-      return contract.addItem(state, { caller, input })
+      return contract.addItem(state, action)
     case 'removeItem':
-      return contract.removeItem(state, { caller, input })
+      return contract.removeItem(state, action)
     case 'setItems':
-      return contract.setItems(state, { caller, input })
+      return contract.setItems(state, action)
     case 'hideItem':
-      return contract.hideItem(state, { caller, input })
+      return contract.hideItem(state, action)
     case 'unhideItem':
-      return contract.unhideItem(state, { caller, input })
+      return contract.unhideItem(state, action)
     case 'setHiddenItems':
-      return contract.setHiddenItems(state, { caller, input })
+      return contract.setHiddenItems(state, action)
     case 'addToWhitelist':
-      return contract.addToWhitelist(state, { caller, input })
+      return contract.addToWhitelist(state, action)
     case 'removeFromWhitelist':
-      return contract.removeFromWhitelist(state, { caller, input })
+      return contract.removeFromWhitelist(state, action)
     default:
       throw new ContractError('Invalid input')
   }

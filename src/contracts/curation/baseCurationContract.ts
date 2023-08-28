@@ -54,74 +54,49 @@ export interface SetHiddenItems extends ContractFunctionInput {
   items: string[]
 }
 
-export type BaseCurationInput =
-  | PartialFunctionInput<SetTitle>
-  | PartialFunctionInput<SetMetadata>
-  | PartialFunctionInput<AddItem>
-  | PartialFunctionInput<RemoveItem>
-  | PartialFunctionInput<SetItems>
-  | PartialFunctionInput<HideItem>
-  | PartialFunctionInput<UnhideItem>
-  | PartialFunctionInput<SetHiddenItems>
-
 export type BaseCurationResult = any
 
 export class BaseCurationContract<State extends BaseCurationState> {
-  setTitle(
-    state: State,
-    { input }: Interaction<PartialFunctionInput<SetTitle>>
-  ): HandlerResult<State, BaseCurationResult> {
-    ContractAssert(typeof input.title === 'string', 'Title must be a string')
+  setTitle(state: State, { input }: Interaction) {
+    const { title } = input
 
-    state.title = input.title
+    ContractAssert(typeof title === 'string', 'Title must be a string')
+
+    state.title = title
 
     return { state, result: true }
   }
 
-  setMetadata(
-    state: State,
-    action: Interaction<PartialFunctionInput<SetMetadata>>
-  ): HandlerResult<State, BaseCurationResult> {
+  setMetadata(state: State, { input }: Interaction) {
+    const { metadata } = input
+
     ContractAssert(
-      typeof action.input.metadata === 'object'
-        && !Array.isArray(action.input.metadata),
+      typeof metadata === 'object' && !Array.isArray(metadata),
       'Metadata must be an object'
     )
 
-    state.metadata = action.input.metadata
+    state.metadata = metadata
 
     return { state, result: true }
   }
 
-  addItem(
-    state: State,
-    action: Interaction<PartialFunctionInput<AddItem>>
-  ): HandlerResult<State, BaseCurationResult> {
-    ContractAssert(
-      typeof action.input.item === 'string',
-      'Item must be a string'
-    )
+  addItem(state: State, { input }: Interaction) {
+    const { item } = input
 
-    ContractAssert(
-      !state.items.includes(action.input.item),
-      'Item must be unique'
-    )
+    ContractAssert(typeof item === 'string', 'Item must be a string')
+    ContractAssert(!state.items.includes(item), 'Item must be unique')
 
-    state.items.push(action.input.item)
+    state.items.push(item)
 
     return { state, result: true }
   }
 
-  removeItem(
-    state: State,
-    action: Interaction<PartialFunctionInput<RemoveItem>>
-  ): HandlerResult<State, BaseCurationResult> {
-    ContractAssert(
-      typeof action.input.item === 'string',
-      'Item must be a string'
-    )
+  removeItem(state: State, { input }: Interaction) {
+    const { item } = input
 
-    const idx = state.items.findIndex(i => i === action.input.item)
+    ContractAssert(typeof item === 'string', 'Item must be a string')
+
+    const idx = state.items.findIndex(i => i === item)
 
     if (idx >= 0) {
       state.items.splice(idx, 1)
@@ -132,54 +107,37 @@ export class BaseCurationContract<State extends BaseCurationState> {
     return { state, result: true }
   }
 
-  setItems(
-    state: State,
-    action: Interaction<PartialFunctionInput<SetItems>>
-  ): HandlerResult<State, BaseCurationResult> {
-    ContractAssert(
-      Array.isArray(action.input.items),
-      'Items must be an array'
-    )
+  setItems(state: State, { input }: Interaction) {
+    const { items } = input
 
+    ContractAssert(Array.isArray(items), 'Items must be an array')
     ContractAssert(
-      action.input.items.every(i => typeof i === 'string'),
+      items.every(i => typeof i === 'string'),
       'Items must be strings'
     )
 
-    state.items = action.input.items
+    state.items = items
 
     return { state, result: true }
   }
 
-  hideItem(
-    state: State,
-    action: Interaction<PartialFunctionInput<HideItem>>
-  ): HandlerResult<State, BaseCurationResult> {
-    ContractAssert(
-      typeof action.input.item === 'string',
-      '(Hidden) Item must be a string'
-    )
+  hideItem(state: State, { input }: Interaction) {
+    const { item } = input
 
-    ContractAssert(
-      !state.hidden.includes(action.input.item),
-      '(Hidden) Item must be unique'
-    )
+    ContractAssert(typeof item === 'string', '(Hidden) Item must be a string')
+    ContractAssert(!state.hidden.includes(item), '(Hidden) Item must be unique')
 
-    state.hidden.push(action.input.item)
+    state.hidden.push(item)
 
     return { state, result: true }
   }
 
-  unhideItem(
-    state: State,
-    action: Interaction<PartialFunctionInput<UnhideItem>>
-  ): HandlerResult<State, BaseCurationResult> {
-    ContractAssert(
-      typeof action.input.item === 'string',
-      '(Hidden) Item must be a string'
-    )
+  unhideItem(state: State, { input }: Interaction) {
+    const { item } = input
 
-    const idx = state.hidden.findIndex(i => i === action.input.item)
+    ContractAssert(typeof item === 'string', '(Hidden) Item must be a string')
+
+    const idx = state.hidden.findIndex(i => i === item)
 
     if (idx >= 0) {
       state.hidden.splice(idx, 1)
@@ -190,21 +148,16 @@ export class BaseCurationContract<State extends BaseCurationState> {
     return { state, result: true }
   }
 
-  setHiddenItems(
-    state: State,
-    action: Interaction<PartialFunctionInput<SetHiddenItems>>
-  ): HandlerResult<State, BaseCurationResult> {
-    ContractAssert(
-      Array.isArray(action.input.items),
-      '(Hidden) Items must be an array'
-    )
+  setHiddenItems(state: State, { input }: Interaction) {
+    const { items } = input
 
+    ContractAssert(Array.isArray(items), '(Hidden) Items must be an array')
     ContractAssert(
-      action.input.items.every(i => typeof i === 'string'),
+      items.every(i => typeof i === 'string'),
       '(Hidden) Items must be strings'
     )
 
-    state.hidden = action.input.items
+    state.hidden = items
 
     return { state, result: true }
   }
@@ -212,29 +165,27 @@ export class BaseCurationContract<State extends BaseCurationState> {
 
 export default function handle(
   state: BaseCurationState,
-  action: Interaction<BaseCurationInput>
+  action: Interaction<ContractFunctionInput>
 ): HandlerResult<BaseCurationState, BaseCurationResult> {
   const contract = new BaseCurationContract()
-  const caller = action.caller
-  const input = action.input
 
-  switch (input.function) {
+  switch (action.input.function) {
     case 'setTitle':
-      return contract.setTitle(state, { caller, input })
+      return contract.setTitle(state, action)
     case 'setMetadata':
-      return contract.setMetadata(state, { caller, input })
+      return contract.setMetadata(state, action)
     case 'addItem':
-      return contract.addItem(state, { caller, input })
+      return contract.addItem(state, action)
     case 'removeItem':
-      return contract.removeItem(state, { caller, input })
+      return contract.removeItem(state, action)
     case 'setItems':
-      return contract.setItems(state, { caller, input })
+      return contract.setItems(state, action)
     case 'hideItem':
-      return contract.hideItem(state, { caller, input })
+      return contract.hideItem(state, action)
     case 'unhideItem':
-      return contract.unhideItem(state, { caller, input })
+      return contract.unhideItem(state, action)
     case 'setHiddenItems':
-      return contract.setHiddenItems(state, { caller, input })
+      return contract.setHiddenItems(state, action)
     default:
       throw new ContractError('Invalid input')
   }

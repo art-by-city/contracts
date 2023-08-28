@@ -3,9 +3,7 @@ import { expect } from 'chai'
 
 import { ContractError } from '../../../../environment'
 import {
-  OwnableWhitelistCurationState,
   whitelistCurationHandle as handle,
-  WhitelistCurationInput,
   WhitelistCurationState
 } from '../../../../src/contracts/curation'
 import { Interaction } from '../../../../src/util'
@@ -16,7 +14,7 @@ const BOB = '0xBOB'
 const ITEM_1 = '0xITEM-1'
 const ITEM_2 = '0xITEM-2'
 const ITEM_3 = '0xITEM-3'
-let initState: OwnableWhitelistCurationState
+let initState: WhitelistCurationState
 function resetState() {
   initState = {
     owner: CONTRACT_OWNER,
@@ -41,7 +39,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should allow the owner to add to the whitelist', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addToWhitelist',
@@ -56,7 +54,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should require addresses added to the whitelist are strings', () => {
-    const interaction: any = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addToWhitelist',
@@ -68,7 +66,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should require addresses added to the whitelist are unique', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addToWhitelist',
@@ -86,7 +84,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent non-owners from adding to the whitelist', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'addToWhitelist',
@@ -98,7 +96,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should allow the owner to remove from the whitelist', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeFromWhitelist',
@@ -116,7 +114,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should require addresses removed from the whitelist are strings', () => {
-    const interaction: any = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeFromWhitelist',
@@ -128,7 +126,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should require addresses removed from the whitelist exist', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeFromWhitelist',
@@ -140,7 +138,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent non-owners from removing from the whitelist', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'removeFromWhitelist',
@@ -158,7 +156,7 @@ describe('ownable whitelist curation contract', () => {
    * Title
    */
   it('should allow owner to set title', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setTitle',
@@ -172,7 +170,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from setting title', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setTitle',
@@ -187,7 +185,7 @@ describe('ownable whitelist curation contract', () => {
    * Metadata
    */
   it('should allow owner to set metadata', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setMetadata',
@@ -201,7 +199,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from setting metadata', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setMetadata',
@@ -216,7 +214,7 @@ describe('ownable whitelist curation contract', () => {
    * Adding items
    */
   it('should allow owner to add items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addItem',
@@ -231,7 +229,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from adding items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'addItem',
@@ -246,7 +244,7 @@ describe('ownable whitelist curation contract', () => {
    * Removing items
    */
   it('should allow owner to remove items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeItem',
@@ -269,7 +267,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from removing items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'removeItem',
@@ -290,7 +288,7 @@ describe('ownable whitelist curation contract', () => {
    * Setting items
    */
   it('should allow owner to set items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setItems',
@@ -313,7 +311,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from setting items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setItems',
@@ -334,7 +332,7 @@ describe('ownable whitelist curation contract', () => {
    * Hiding items
    */
   it('should allow owner to hide items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'hideItem',
@@ -349,7 +347,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from hiding items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'hideItem',
@@ -364,7 +362,7 @@ describe('ownable whitelist curation contract', () => {
    * Unhiding items
    */
   it('should allow owner to unhide items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'unhideItem',
@@ -387,7 +385,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from unhiding items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'unhideItem',
@@ -408,7 +406,7 @@ describe('ownable whitelist curation contract', () => {
    * Setting hidden items
    */
   it('should allow owner to set hidden items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setHiddenItems',
@@ -425,7 +423,7 @@ describe('ownable whitelist curation contract', () => {
   })
 
   it('should prevent everyone else from setting hidden items', () => {
-    const interaction: Interaction<WhitelistCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setHiddenItems',

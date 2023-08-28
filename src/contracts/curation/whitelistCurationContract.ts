@@ -6,22 +6,26 @@ import {
   ContractFunctionInput,
   Interaction,
   OnlyOwner,
-  PartialFunctionInput
+  // PartialFunctionInput
 } from '../../util'
 import {
-  BaseCurationContract,
+  // BaseCurationContract,
   BaseCurationState,
   OwnableCurationContract,
-  OwnableCurationInput,
   OwnableCurationState
 } from './'
 
-export type WhitelistCurationState = BaseCurationState & {
+export type WhitelistState = {
   addressWhitelist: string[]
 }
 
-export type OwnableWhitelistCurationState = OwnableCurationState
-  & WhitelistCurationState
+export type WhitelistCurationState =
+  BaseCurationState
+  & OwnableCurationState
+  & WhitelistState
+
+// export type OwnableWhitelistCurationState = OwnableCurationState
+//   & WhitelistCurationState
 
 export interface AddToWhitelist extends ContractFunctionInput {
   function: 'addToWhitelist',
@@ -32,10 +36,6 @@ export interface RemoveFromWhitelist extends ContractFunctionInput {
   function: 'removeFromWhitelist',
   address: string
 }
-
-export type WhitelistCurationInput = OwnableCurationInput
-  | PartialFunctionInput<AddToWhitelist>
-  | PartialFunctionInput<RemoveFromWhitelist>
 
 export type WhitelistCurationResult = any
 
@@ -48,14 +48,10 @@ export function WithWhitelist<Contract extends Constructor>(
   BaseContract: Contract
 ) {
   return class WithWhitelist extends BaseContract {
-    addToWhitelist(
-      state: WhitelistCurationState,
-      action: Interaction<PartialFunctionInput<AddToWhitelist>>
-    ): HandlerResult<WhitelistCurationState, WhitelistCurationResult> {
-      const address = action.input.address
+    addToWhitelist(state: WhitelistCurationState, { input }: Interaction) {
+      const { address } = input
 
       ContractAssert(typeof address === 'string', 'Address must be a string')
-
       ContractAssert(
         !state.addressWhitelist.includes(address),
         'Address already whitelisted'
@@ -66,11 +62,8 @@ export function WithWhitelist<Contract extends Constructor>(
       return { state, result: true }
     }
 
-    removeFromWhitelist(
-      state: WhitelistCurationState,
-      action: Interaction<PartialFunctionInput<RemoveFromWhitelist>>
-    ): HandlerResult<WhitelistCurationState, WhitelistCurationResult> {
-      const address = action.input.address
+    removeFromWhitelist(state: WhitelistCurationState, { input }: Interaction) {
+      const { address } = input
 
       ContractAssert(typeof address === 'string', 'Address must be a string')
 
@@ -86,72 +79,57 @@ export function WithWhitelist<Contract extends Constructor>(
   }
 }
 
-class BaseCurationWithWhitelistContract
-  extends BaseCurationContract<WhitelistCurationState> {}
+// class BaseCurationWithWhitelistContract
+//   extends BaseCurationContract<WhitelistCurationState> {}
+
+// export class WhitelistCurationContract
+//   extends WithWhitelist(BaseCurationWithWhitelistContract) {}
+
+// class OwnableCurationWithWhitelistContract
+//   extends OwnableCurationContract<WhitelistCurationState> {}
 
 export class WhitelistCurationContract
-  extends WithWhitelist(BaseCurationWithWhitelistContract) {}
-
-class OwnableCurationWithWhitelistContract
-  extends OwnableCurationContract<OwnableWhitelistCurationState> {}
-
-export class OwnableWhitelistCurationContract
-  extends WithWhitelist(OwnableCurationWithWhitelistContract)
+  extends WithWhitelist(OwnableCurationContract<WhitelistCurationState>)
+  // extends WithWhitelist(OwnableCurationWithWhitelistContract)
 {
   @OnlyOwner
-  addToWhitelist(
-    state: OwnableWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<AddToWhitelist>>
-  ): HandlerResult<OwnableWhitelistCurationState, WhitelistCurationResult> {
-    // TODO -> fix type cast
-    return super.addToWhitelist(
-      state,
-      action
-    ) as HandlerResult<OwnableWhitelistCurationState, WhitelistCurationResult>
+  addToWhitelist(state: WhitelistCurationState, action: Interaction) {
+    return super.addToWhitelist(state, action)
   }
 
   @OnlyOwner
-  removeFromWhitelist(
-    state: OwnableWhitelistCurationState,
-    action: Interaction<PartialFunctionInput<RemoveFromWhitelist>>
-  ): HandlerResult<OwnableWhitelistCurationState, WhitelistCurationResult> {
-    // TODO -> fix type cast
-    return super.removeFromWhitelist(
-      state,
-      action
-    ) as HandlerResult<OwnableWhitelistCurationState, WhitelistCurationResult>
+  removeFromWhitelist(state: WhitelistCurationState, action: Interaction) {
+    return super.removeFromWhitelist(state, action)
   }
 }
 
 export default function handle(
-  state: OwnableWhitelistCurationState,
-  action: Interaction<WhitelistCurationInput>
+  state: WhitelistCurationState,
+  action: Interaction<ContractFunctionInput>
 ): WhitelistCurationHandlerResult {
-  const contract = new OwnableWhitelistCurationContract()
-  const caller = action.caller
-  const input = action.input
+  const contract = new WhitelistCurationContract()
 
-  switch (input.function) {
+  switch (action.input.function) {
     case 'setTitle':
-      return contract.setTitle(state, { caller, input })
+      return contract.setTitle(state, action)
     case 'setMetadata':
-      return contract.setMetadata(state, { caller, input })
+      return contract.setMetadata(state, action)
     case 'addItem':
-      return contract.addItem(state, { caller, input })
+      return contract.addItem(state, action)
     case 'removeItem':
-      return contract.removeItem(state, { caller, input })
+      return contract.removeItem(state, action)
     case 'setItems':
-      return contract.setItems(state, { caller, input })
+      return contract.setItems(state, action)
     case 'hideItem':
-      return contract.hideItem(state, { caller, input })
+      return contract.hideItem(state, action)
     case 'unhideItem':
-      return contract.unhideItem(state, { caller, input })
+      return contract.unhideItem(state, action)
     case 'setHiddenItems':
-      return contract.setHiddenItems(state, { caller, input })
+      return contract.setHiddenItems(state, action)
     case 'addToWhitelist':
-      return contract.addToWhitelist(state, { caller, input })
+      return contract.addToWhitelist(state, action)
     case 'removeFromWhitelist':
-      return contract.removeFromWhitelist(state, { caller, input })
+      return contract.removeFromWhitelist(state, action)
     default:
       throw new ContractError('Invalid input')
   }

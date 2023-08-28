@@ -4,7 +4,6 @@ import { expect } from 'chai'
 import { ContractError } from '../../../../environment'
 import {
   collaborativeCurationHandle as handle,
-  CollaborativeCurationInput,
   CollaborativeCurationState
 } from '../../../../src/contracts/curation'
 import { Interaction } from '../../../../src/util'
@@ -42,7 +41,7 @@ describe('collaborative curation contract', () => {
    * Curator Management
    */
   it('should allow owner to add curators', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addCurator',
@@ -57,7 +56,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should require added curators are strings', () => {
-    const interaction: any = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addCurator',
@@ -69,7 +68,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should require added curators are unique', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addCurator',
@@ -87,7 +86,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from adding curators', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'addCurator',
@@ -99,7 +98,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow owner to remove curators', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeCurator',
@@ -117,7 +116,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should require removed curators are strings', () => {
-    const interaction: any = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeCurator',
@@ -129,7 +128,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should require removed curators exist', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeCurator',
@@ -141,7 +140,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from removing curators', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'removeCurator',
@@ -159,7 +158,7 @@ describe('collaborative curation contract', () => {
    * Title
    */
   it('should allow owner to set title', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setTitle',
@@ -173,7 +172,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow curators to set title', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setTitle',
@@ -193,7 +192,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from setting title', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: BOB,
       input: {
         function: 'setTitle',
@@ -208,7 +207,7 @@ describe('collaborative curation contract', () => {
    * Metadata
    */
   it('should allow owner to set metadata', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setMetadata',
@@ -222,7 +221,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow curators to set metadata', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setMetadata',
@@ -242,7 +241,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from setting metadata', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: BOB,
       input: {
         function: 'setMetadata',
@@ -257,7 +256,7 @@ describe('collaborative curation contract', () => {
    * Adding items
    */
   it('should allow owner to add items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addItem',
@@ -272,7 +271,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow curators to add items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'addItem',
@@ -293,7 +292,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from adding items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: BOB,
       input: {
         function: 'addItem',
@@ -308,7 +307,7 @@ describe('collaborative curation contract', () => {
    * Removing items
    */
   it('should allow owner to remove items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeItem',
@@ -331,7 +330,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow curators to remove items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'removeItem',
@@ -355,7 +354,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from removing items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: BOB,
       input: {
         function: 'removeItem',
@@ -376,7 +375,7 @@ describe('collaborative curation contract', () => {
    * Setting items
    */
   it('should allow owner to set items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setItems',
@@ -392,7 +391,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow curators to set items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setItems',
@@ -414,7 +413,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from setting items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: BOB,
       input: {
         function: 'setItems',
@@ -429,7 +428,7 @@ describe('collaborative curation contract', () => {
    * Hide items
    */
   it('should allow owner to hide items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'hideItem',
@@ -444,7 +443,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow curators to hide items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'hideItem',
@@ -465,7 +464,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from hiding items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: BOB,
       input: {
         function: 'hideItem',
@@ -480,7 +479,7 @@ describe('collaborative curation contract', () => {
    * Unhide items
    */
   it('should allow owner to unhide items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'unhideItem',
@@ -503,7 +502,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow curators to unhide items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'unhideItem',
@@ -527,7 +526,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from unhiding items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: BOB,
       input: {
         function: 'unhideItem',
@@ -548,7 +547,7 @@ describe('collaborative curation contract', () => {
    * Set hidden items
    */
   it('should allow owner to set hidden items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setHiddenItems',
@@ -565,7 +564,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should allow curators to set hidden items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setHiddenItems',
@@ -588,7 +587,7 @@ describe('collaborative curation contract', () => {
   })
 
   it('should prevent everyone else from setting hidden items', () => {
-    const interaction: Interaction<CollaborativeCurationInput> = {
+    const interaction = {
       caller: BOB,
       input: {
         function: 'setHiddenItems',

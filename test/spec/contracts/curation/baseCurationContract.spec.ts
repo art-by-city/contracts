@@ -4,10 +4,8 @@ import { expect } from 'chai'
 import { ContractError } from '../../../../environment'
 import {
   baseCurationHandle as handle,
-  BaseCurationInput,
   BaseCurationState
 } from '../../../../src/contracts/curation'
-import { Interaction } from '../../../../src/util'
 
 const ALICE = '0xALICE'
 const ITEM_1 = '0xITEM-1'
@@ -34,7 +32,7 @@ describe('base curation contract', () => {
 
   it('should allow a title to be set', () => {
     const title = 'Alice\'s Curation'
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setTitle',
@@ -61,7 +59,7 @@ describe('base curation contract', () => {
       description: 'This is a curation from Alice',
       rating: 5
     }
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setMetadata',
@@ -89,7 +87,7 @@ describe('base curation contract', () => {
 
   it('should not allow metadata to be an array', () => {
     const metadata = [12]
-    const interaction: any = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setMetadata',
@@ -101,7 +99,7 @@ describe('base curation contract', () => {
   })
 
   it('should allow items to be added', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'addItem',
@@ -128,7 +126,7 @@ describe('base curation contract', () => {
   })
 
   it('should require added items to be unique', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'addItem',
@@ -142,7 +140,7 @@ describe('base curation contract', () => {
   })
 
   it('should allow items to be removed', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'removeItem',
@@ -164,7 +162,7 @@ describe('base curation contract', () => {
   })
 
   it('should require removed item to be a string', () => {
-    const interaction: any = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'removeItem',
@@ -176,7 +174,7 @@ describe('base curation contract', () => {
   })
 
   it('should require removed item exists', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'removeItem',
@@ -188,7 +186,7 @@ describe('base curation contract', () => {
   })
 
   it('should allow items to be set as a whole', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setItems',
@@ -202,7 +200,7 @@ describe('base curation contract', () => {
   })
 
   it('should require items being set to be an array of strings', () => {
-    const interaction: any = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setItems',
@@ -212,7 +210,7 @@ describe('base curation contract', () => {
 
     expect(() => { handle(initState, interaction) }).to.throw(ContractError)
 
-    const interaction2: any = {
+    const interaction2 = {
       caller: ALICE,
       input: {
         function: 'setItems',
@@ -224,7 +222,7 @@ describe('base curation contract', () => {
   })
 
   it('should allow items to be hidden', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'hideItem',
@@ -239,7 +237,7 @@ describe('base curation contract', () => {
   })
 
   it('should require hidden items to be strings', () => {
-    const interaction: any = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'hideItem',
@@ -251,7 +249,7 @@ describe('base curation contract', () => {
   })
 
   it('should require hidden items to be unique', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'hideItem',
@@ -265,7 +263,7 @@ describe('base curation contract', () => {
   })
 
   it('should allow items to be unhidden', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'unhideItem',
@@ -287,7 +285,7 @@ describe('base curation contract', () => {
   })
 
   it('should require unhidden item to be a string', () => {
-    const interaction: any = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'unhideItem',
@@ -299,7 +297,7 @@ describe('base curation contract', () => {
   })
 
   it('should require unhidden item exists', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'unhideItem',
@@ -311,7 +309,7 @@ describe('base curation contract', () => {
   })
 
   it('should allow hidden items to be set as a whole', () => {
-    const interaction: Interaction<BaseCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setHiddenItems',
@@ -325,7 +323,7 @@ describe('base curation contract', () => {
   })
 
   it('should require hidden items being set to be an array of strings', () => {
-    const interaction: any = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setHiddenItems',
@@ -335,7 +333,7 @@ describe('base curation contract', () => {
 
     expect(() => { handle(initState, interaction) }).to.throw(ContractError)
 
-    const interaction2: any = {
+    const interaction2 = {
       caller: ALICE,
       input: {
         function: 'setHiddenItems',
