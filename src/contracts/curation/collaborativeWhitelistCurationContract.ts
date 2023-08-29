@@ -21,12 +21,17 @@ export type CollaborativeWhitelistCurationState =
 
 export type CollaborativeWhitelistCurationResult = any
 
-export class CollaborativeWhitelistCurationContract
-  extends Collaborative(OwnerlessWhitelistCurationContract)
-{
+// interface ColloborativeWhitelistCurationContractConstructor {
+//   new (...args: any[]): CollaborativeWhitelistCurationContract
+// }
+
+export class CollaborativeWhitelistCurationContract extends Collaborative<
+  CollaborativeWhitelistCurationState,
+  typeof OwnerlessWhitelistCurationContract
+>(OwnerlessWhitelistCurationContract) {
   @OnlyOwner
   addCurator(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.addCurator(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.addCurator(state, action)// as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwner
@@ -34,7 +39,7 @@ export class CollaborativeWhitelistCurationContract
     state: CollaborativeWhitelistCurationState,
     action: Interaction
   ) {
-    return super.removeCurator(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.removeCurator(state, action)// as HandlerResult<CollaborativeWhitelistCurationState, any>
   }
 
   @OnlyOwnerOrRole('curator')

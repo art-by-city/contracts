@@ -47,7 +47,10 @@ export type WhitelistCurationHandlerResult = HandlerResult<
   WhitelistCurationResult
 >
 
-export function WithWhitelist<Contract extends Constructor>(
+export function WithWhitelist<
+  State extends OwnerlessWhitelistCurationState,
+  Contract extends Constructor
+>(
   BaseContract: Contract
 ) {
   return class WithWhitelist extends BaseContract {

@@ -8,20 +8,8 @@ import {
   Interaction,
   OnlyOwner,
   OnlyOwnerOrRole,
-  PartialFunctionInput
 } from '../../util'
-import {
-  AddItem,
-  BaseCurationContract,
-  HideItem,
-  OwnableCurationState,
-  RemoveItem,
-  SetHiddenItems,
-  SetItems,
-  SetMetadata,
-  SetTitle,
-  UnhideItem
-} from './'
+import { BaseCurationContract, OwnableCurationState } from './'
 
 export type CollaborativeCurationState =
   OwnableCurationState & AccessControlState<'curator'>
@@ -43,11 +31,14 @@ export type CollaborativeCurationHandlerResult = HandlerResult<
   CollaborativeCurationResult
 >
 
-export function Collaborative<Contract extends Constructor>(
+export function Collaborative<
+  State extends CollaborativeCurationState,
+  Contract extends Constructor
+>(
   ContractBase: Contract
 ) {
   return class Collaborate extends ContractBase {
-    addCurator(state: CollaborativeCurationState, { input }: Interaction) {
+    addCurator(state: State, { input }: Interaction) {
       const { address } = input
 
       ContractAssert(typeof address === 'string', 'Address must be a string')
@@ -62,7 +53,7 @@ export function Collaborative<Contract extends Constructor>(
       return { state, result: true }
     }
 
-    removeCurator(state: CollaborativeCurationState, { input }: Interaction) {
+    removeCurator(state: State, { input }: Interaction) {
       const { address } = input
 
       ContractAssert(typeof address === 'string', 'Address must be a string')
