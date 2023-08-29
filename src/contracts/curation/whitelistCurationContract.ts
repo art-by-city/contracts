@@ -9,6 +9,7 @@ import {
   // PartialFunctionInput
 } from '../../util'
 import {
+  BaseCurationContract,
   // BaseCurationContract,
   BaseCurationState,
   OwnableCurationContract,
@@ -18,6 +19,8 @@ import {
 export type WhitelistState = {
   addressWhitelist: string[]
 }
+
+export type OwnerlessWhitelistCurationState = BaseCurationState & WhitelistState
 
 export type WhitelistCurationState =
   BaseCurationState
@@ -82,15 +85,12 @@ export function WithWhitelist<Contract extends Constructor>(
 // class BaseCurationWithWhitelistContract
 //   extends BaseCurationContract<WhitelistCurationState> {}
 
-// export class WhitelistCurationContract
-//   extends WithWhitelist(BaseCurationWithWhitelistContract) {}
-
-// class OwnableCurationWithWhitelistContract
-//   extends OwnableCurationContract<WhitelistCurationState> {}
+export class OwnerlessWhitelistCurationContract
+  extends WithWhitelist(BaseCurationContract<OwnerlessWhitelistCurationState>)
+{}
 
 export class WhitelistCurationContract
   extends WithWhitelist(OwnableCurationContract<WhitelistCurationState>)
-  // extends WithWhitelist(OwnableCurationWithWhitelistContract)
 {
   @OnlyOwner
   addToWhitelist(state: WhitelistCurationState, action: Interaction) {

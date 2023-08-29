@@ -11,6 +11,7 @@ import {
 import {
   Collaborative,
   CollaborativeCurationState,
+  OwnerlessWhitelistCurationContract,
   WhitelistCurationContract,
   WhitelistCurationState
 } from './'
@@ -21,7 +22,7 @@ export type CollaborativeWhitelistCurationState =
 export type CollaborativeWhitelistCurationResult = any
 
 export class CollaborativeWhitelistCurationContract
-  extends Collaborative(WhitelistCurationContract)
+  extends Collaborative(OwnerlessWhitelistCurationContract)
 {
   @OnlyOwner
   addCurator(state: CollaborativeWhitelistCurationState, action: Interaction) {
