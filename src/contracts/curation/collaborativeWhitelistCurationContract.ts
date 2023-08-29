@@ -2,18 +2,17 @@ import { HandlerResult } from 'warp-contracts'
 
 import { ContractError } from '../../../environment'
 import {
-  AccessControlState,
   ContractFunctionInput,
   Interaction,
   OnlyOwner,
   OnlyOwnerOrRole
 } from '../../util'
 import {
+  BaseCurationContract,
   Collaborative,
   CollaborativeCurationState,
-  OwnerlessWhitelistCurationContract,
-  WhitelistCurationContract,
-  WhitelistCurationState
+  WhitelistCurationState,
+  WithWhitelist,
 } from './'
 
 export type CollaborativeWhitelistCurationState =
@@ -21,17 +20,16 @@ export type CollaborativeWhitelistCurationState =
 
 export type CollaborativeWhitelistCurationResult = any
 
-// interface ColloborativeWhitelistCurationContractConstructor {
-//   new (...args: any[]): CollaborativeWhitelistCurationContract
-// }
+export class BaseWithWhitelistContract extends WithWhitelist(
+  BaseCurationContract<CollaborativeWhitelistCurationState>
+) {}
 
-export class CollaborativeWhitelistCurationContract extends Collaborative<
-  CollaborativeWhitelistCurationState,
-  typeof OwnerlessWhitelistCurationContract
->(OwnerlessWhitelistCurationContract) {
+export class CollaborativeWhitelistCurationContract
+  extends Collaborative(BaseWithWhitelistContract)
+{
   @OnlyOwner
   addCurator(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.addCurator(state, action)// as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.addCurator(state, action)
   }
 
   @OnlyOwner
@@ -39,42 +37,42 @@ export class CollaborativeWhitelistCurationContract extends Collaborative<
     state: CollaborativeWhitelistCurationState,
     action: Interaction
   ) {
-    return super.removeCurator(state, action)// as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.removeCurator(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
   setTitle(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.setTitle(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.setTitle(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
   setMetadata(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.setMetadata(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.setMetadata(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
   addItem(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.addItem(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.addItem(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
   removeItem(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.removeItem(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.removeItem(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
   setItems(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.setItems(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.setItems(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
   hideItem(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.hideItem(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.hideItem(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
   unhideItem(state: CollaborativeWhitelistCurationState, action: Interaction) {
-    return super.unhideItem(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.unhideItem(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
@@ -82,7 +80,7 @@ export class CollaborativeWhitelistCurationContract extends Collaborative<
     state: CollaborativeWhitelistCurationState,
     action: Interaction
   ) {
-    return super.setHiddenItems(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.setHiddenItems(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
@@ -90,7 +88,7 @@ export class CollaborativeWhitelistCurationContract extends Collaborative<
     state: CollaborativeWhitelistCurationState,
     action: Interaction
   ) {
-    return super.addToWhitelist(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.addToWhitelist(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
@@ -98,24 +96,21 @@ export class CollaborativeWhitelistCurationContract extends Collaborative<
     state: CollaborativeWhitelistCurationState,
     action: Interaction
   ) {
-    return super.removeFromWhitelist(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
+    return super.removeFromWhitelist(state, action)
   }
 }
 
 export default function handle(
   state: CollaborativeWhitelistCurationState,
   action: Interaction<ContractFunctionInput>
-): HandlerResult<
-  CollaborativeWhitelistCurationState,
-  CollaborativeWhitelistCurationResult
-> {
+): HandlerResult<CollaborativeWhitelistCurationState, any> {
   const contract = new CollaborativeWhitelistCurationContract()
 
   switch (action.input.function) {
     case 'addCurator':
-      return contract.addCurator(state, action)
+      return contract.addCurator(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
     case 'removeCurator':
-      return contract.removeCurator(state, action)
+      return contract.removeCurator(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
     case 'setTitle':
       return contract.setTitle(state, action)
     case 'setMetadata':
@@ -133,9 +128,9 @@ export default function handle(
     case 'setHiddenItems':
       return contract.setHiddenItems(state, action)
     case 'addToWhitelist':
-      return contract.addToWhitelist(state, action)
+      return contract.addToWhitelist(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
     case 'removeFromWhitelist':
-      return contract.removeFromWhitelist(state, action)
+      return contract.removeFromWhitelist(state, action) as HandlerResult<CollaborativeWhitelistCurationState, any>
     default:
       throw new ContractError('Invalid input')
   }

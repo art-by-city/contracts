@@ -6,7 +6,6 @@ import {
   collaborativeWhitelistCurationHandle as handle,
   CollaborativeWhitelistCurationState
 } from '../../../../src/contracts/curation'
-import { Interaction } from '../../../../src/util'
 
 const CONTRACT_OWNER = '0xCONTRACT-OWNER'
 const ALICE = '0xALICE'

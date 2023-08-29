@@ -1,7 +1,5 @@
-import { HandlerResult } from 'warp-contracts'
-
 import { ContractAssert, ContractError } from '../../../environment'
-import { ContractFunctionInput, Interaction, PartialFunctionInput } from '../../util'
+import { ContractFunctionInput, Interaction } from '../../util'
 
 export type BaseCurationMetadata = {
   [key: string]: any
@@ -12,46 +10,6 @@ export type BaseCurationState = {
   metadata: BaseCurationMetadata
   items: string[]
   hidden: string[]
-}
-
-export interface SetTitle extends ContractFunctionInput {
-  function: 'setTitle'
-  title: string
-}
-
-export interface SetMetadata extends ContractFunctionInput {
-  function: 'setMetadata'
-  metadata: BaseCurationMetadata
-}
-
-export interface AddItem extends ContractFunctionInput {
-  function: 'addItem'
-  item: string
-}
-
-export interface RemoveItem extends ContractFunctionInput {
-  function: 'removeItem'
-  item: string
-}
-
-export interface SetItems extends ContractFunctionInput {
-  function: 'setItems'
-  items: string[]
-}
-
-export interface HideItem extends ContractFunctionInput {
-  function: 'hideItem',
-  item: string
-}
-
-export interface UnhideItem extends ContractFunctionInput {
-  function: 'unhideItem',
-  item: string
-}
-
-export interface SetHiddenItems extends ContractFunctionInput {
-  function: 'setHiddenItems',
-  items: string[]
 }
 
 export type BaseCurationResult = any
@@ -166,7 +124,7 @@ export class BaseCurationContract<State extends BaseCurationState> {
 export default function handle(
   state: BaseCurationState,
   action: Interaction<ContractFunctionInput>
-): HandlerResult<BaseCurationState, BaseCurationResult> {
+) {
   const contract = new BaseCurationContract()
 
   switch (action.input.function) {

@@ -52,7 +52,7 @@ export const OnlyOwnerOrRole = (role: string) => <
   _target: Object,
   _propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<
-    (state: S, action: ContractInteraction<any>) => HandlerResult<S, any>
+    (state: S, action: ContractInteraction<any>) => any
   >
 ) => {
 if (descriptor.value) {

@@ -1,4 +1,3 @@
-import { HandlerResult } from 'warp-contracts'
 import { ContractError } from '../../../environment'
 
 import {
@@ -60,7 +59,7 @@ export class OwnableCurationContract<State extends OwnableCurationState>
 export default function handle(
   state: OwnableCurationState,
   action: Interaction<ContractFunctionInput>
-): HandlerResult<OwnableCurationState, OwnableCurationResult> {
+) {
   const contract = new OwnableCurationContract()
 
   switch (action.input.function) {

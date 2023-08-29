@@ -1,16 +1,13 @@
-import { HandlerResult } from 'warp-contracts'
 import { ContractAssert, ContractError } from '../../../environment'
 
 import {
   Constructor,
   ContractFunctionInput,
   Interaction,
-  OnlyOwner,
-  // PartialFunctionInput
+  OnlyOwner
 } from '../../util'
 import {
   BaseCurationContract,
-  // BaseCurationContract,
   BaseCurationState,
   OwnableCurationContract,
   OwnableCurationState
@@ -27,25 +24,7 @@ export type WhitelistCurationState =
   & OwnableCurationState
   & WhitelistState
 
-// export type OwnableWhitelistCurationState = OwnableCurationState
-//   & WhitelistCurationState
-
-export interface AddToWhitelist extends ContractFunctionInput {
-  function: 'addToWhitelist',
-  address: string
-}
-
-export interface RemoveFromWhitelist extends ContractFunctionInput {
-  function: 'removeFromWhitelist',
-  address: string
-}
-
 export type WhitelistCurationResult = any
-
-export type WhitelistCurationHandlerResult = HandlerResult<
-  WhitelistCurationState,
-  WhitelistCurationResult
->
 
 export function WithWhitelist<
   State extends OwnerlessWhitelistCurationState,
@@ -54,7 +33,7 @@ export function WithWhitelist<
   BaseContract: Contract
 ) {
   return class WithWhitelist extends BaseContract {
-    addToWhitelist(state: WhitelistCurationState, { input }: Interaction) {
+    addToWhitelist(state: State, { input }: Interaction) {
       const { address } = input
 
       ContractAssert(typeof address === 'string', 'Address must be a string')
@@ -68,7 +47,7 @@ export function WithWhitelist<
       return { state, result: true }
     }
 
-    removeFromWhitelist(state: WhitelistCurationState, { input }: Interaction) {
+    removeFromWhitelist(state: State, { input }: Interaction) {
       const { address } = input
 
       ContractAssert(typeof address === 'string', 'Address must be a string')
@@ -85,16 +64,14 @@ export function WithWhitelist<
   }
 }
 
-// class BaseCurationWithWhitelistContract
-//   extends BaseCurationContract<WhitelistCurationState> {}
+export class OwnerlessWhitelistCurationContract extends WithWhitelist(
+  BaseCurationContract<OwnerlessWhitelistCurationState>
+) {}
 
-export class OwnerlessWhitelistCurationContract
-  extends WithWhitelist(BaseCurationContract<OwnerlessWhitelistCurationState>)
-{}
-
-export class WhitelistCurationContract
-  extends WithWhitelist(OwnableCurationContract<WhitelistCurationState>)
-{
+export class WhitelistCurationContract extends WithWhitelist<
+  WhitelistCurationState,
+  typeof OwnableCurationContract<WhitelistCurationState>
+>(OwnableCurationContract<WhitelistCurationState>) {
   @OnlyOwner
   addToWhitelist(state: WhitelistCurationState, action: Interaction) {
     return super.addToWhitelist(state, action)
@@ -109,7 +86,7 @@ export class WhitelistCurationContract
 export default function handle(
   state: WhitelistCurationState,
   action: Interaction<ContractFunctionInput>
-): WhitelistCurationHandlerResult {
+) {
   const contract = new WhitelistCurationContract()
 
   switch (action.input.function) {

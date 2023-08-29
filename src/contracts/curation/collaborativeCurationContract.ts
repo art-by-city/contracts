@@ -1,5 +1,4 @@
 import { HandlerResult } from 'warp-contracts'
-
 import { ContractAssert, ContractError } from '../../../environment'
 import {
   AccessControlState,
@@ -14,22 +13,7 @@ import { BaseCurationContract, OwnableCurationState } from './'
 export type CollaborativeCurationState =
   OwnableCurationState & AccessControlState<'curator'>
 
-export interface AddCurator extends ContractFunctionInput {
-  function: 'addCurator',
-  address: string
-}
-
-export interface RemoveCurator extends ContractFunctionInput {
-  function: 'removeCurator',
-  address: string
-}
-
 export type CollaborativeCurationResult = any
-
-export type CollaborativeCurationHandlerResult = HandlerResult<
-  CollaborativeCurationState,
-  CollaborativeCurationResult
->
 
 export function Collaborative<
   State extends CollaborativeCurationState,
@@ -40,7 +24,6 @@ export function Collaborative<
   return class Collaborate extends ContractBase {
     addCurator(state: State, { input }: Interaction) {
       const { address } = input
-
       ContractAssert(typeof address === 'string', 'Address must be a string')
 
       ContractAssert(
@@ -70,12 +53,10 @@ export function Collaborative<
   }
 }
 
-class BaseCurationWithCollaborationContract
-  extends BaseCurationContract<CollaborativeCurationState> {}
-
-export class CollaborativeCurationContract
-  extends Collaborative(BaseCurationWithCollaborationContract)
-{
+export class CollaborativeCurationContract extends Collaborative<
+  CollaborativeCurationState,
+  typeof BaseCurationContract<CollaborativeCurationState>
+>(BaseCurationContract<CollaborativeCurationState>) {
   @OnlyOwner
   addCurator(state: CollaborativeCurationState, action: Interaction) {
     return super.addCurator(state, action)
@@ -130,7 +111,7 @@ export class CollaborativeCurationContract
 export default function handle(
   state: CollaborativeCurationState,
   action: Interaction<ContractFunctionInput>
-): CollaborativeCurationHandlerResult {
+) {
   const contract = new CollaborativeCurationContract()
 
   switch (action.input.function) {
