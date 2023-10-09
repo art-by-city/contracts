@@ -1,3 +1,4 @@
+import { HandlerResult } from 'warp-contracts'
 import { ContractAssert, ContractError } from '../../../environment'
 import { ContractFunctionInput, Interaction } from '../../util'
 

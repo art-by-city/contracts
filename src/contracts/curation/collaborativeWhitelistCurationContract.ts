@@ -20,12 +20,8 @@ export type CollaborativeWhitelistCurationState =
 
 export type CollaborativeWhitelistCurationResult = any
 
-export class BaseWithWhitelistContract extends WithWhitelist(
-  BaseCurationContract<CollaborativeWhitelistCurationState>
-) {}
-
 export class CollaborativeWhitelistCurationContract
-  extends Collaborative(BaseWithWhitelistContract)
+  extends Collaborative(WithWhitelist(BaseCurationContract<CollaborativeWhitelistCurationState>))
 {
   @OnlyOwner
   addCurator(state: CollaborativeWhitelistCurationState, action: Interaction) {

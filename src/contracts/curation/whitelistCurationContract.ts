@@ -1,3 +1,4 @@
+import { HandlerResult } from 'warp-contracts'
 import { ContractAssert, ContractError } from '../../../environment'
 
 import {
@@ -26,13 +27,17 @@ export type WhitelistCurationState =
 
 export type WhitelistCurationResult = any
 
+export interface IWithWhitelist<State extends OwnerlessWhitelistCurationState> {
+  addToWhitelist(state: State, action: Interaction): HandlerResult<State, any>
+}
+
 export function WithWhitelist<
   State extends OwnerlessWhitelistCurationState,
   Contract extends Constructor
 >(
   BaseContract: Contract
 ) {
-  return class WithWhitelist extends BaseContract {
+  return class WithWhitelist extends BaseContract implements IWithWhitelist<State> {
     addToWhitelist(state: State, { input }: Interaction) {
       const { address } = input
 
