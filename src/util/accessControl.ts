@@ -3,14 +3,14 @@ import { OwnableState } from '.'
 
 import { ContractAssert, ContractError } from '../../environment'
 
-export type AccessControl<Roles extends string | number | symbol> = {
+export type AccessControlState<Roles extends string | number | symbol> = {
   roles: {
     [role in Roles]: string[]
   }
 }
 
 export const OnlyRole = (role: string) => <
-  S extends AccessControl<typeof role>
+  S extends AccessControlState<typeof role>
 >(
   _target: Object,
   _propertyKey: string | symbol,
@@ -47,12 +47,12 @@ export const OnlyRole = (role: string) => <
 }
 
 export const OnlyOwnerOrRole = (role: string) => <
-  S extends (OwnableState & AccessControl<typeof role>)
+  S extends (OwnableState & AccessControlState<typeof role>)
 >(
   _target: Object,
   _propertyKey: string | symbol,
   descriptor: TypedPropertyDescriptor<
-    (state: S, action: ContractInteraction<any>) => HandlerResult<S, any>
+    (state: S, action: ContractInteraction<any>) => any
   >
 ) => {
 if (descriptor.value) {

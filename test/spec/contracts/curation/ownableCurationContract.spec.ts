@@ -4,10 +4,8 @@ import { expect } from 'chai'
 import { ContractError } from '../../../../environment'
 import {
   ownableCurationHandle as handle,
-  OwnableCurationInput,
   OwnableCurationState
 } from '../../../../src/contracts/curation'
-import { Interaction } from '../../../../src/util'
 
 const CONTRACT_OWNER = '0xCONTRACT-OWNER'
 const ALICE = '0xALICE'
@@ -35,7 +33,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should allow the owner to set title', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setTitle',
@@ -49,7 +47,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should prevent non-owners from setting title', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setTitle',
@@ -61,7 +59,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should allow the owner to set metadata', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setMetadata',
@@ -79,7 +77,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should prevent non-owners from setting metadata', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setMetadata',
@@ -93,7 +91,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should allow the owner to add items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'addItem',
@@ -108,7 +106,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should prevent non-owners from adding items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'addItem',
@@ -120,7 +118,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should allow the owner to remove items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'removeItem',
@@ -143,7 +141,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should prevent non-owners from removing items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'removeItem',
@@ -161,7 +159,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should allow the owner to set items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setItems',
@@ -184,7 +182,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should prevent non-owners from setting items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setItems',
@@ -202,7 +200,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should allow the owner to hide items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'hideItem',
@@ -217,7 +215,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should prevent non-owners from hiding items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'addItem',
@@ -229,7 +227,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should allow the owner to unhide items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'unhideItem',
@@ -252,7 +250,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should prevent non-owners from unhiding items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'unhideItem',
@@ -270,7 +268,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should allow the owner to set hidden items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setHiddenItems',
@@ -293,7 +291,7 @@ describe('ownable curation contract', () => {
   })
 
   it('should prevent non-owners from setting hidden items', () => {
-    const interaction: Interaction<OwnableCurationInput> = {
+    const interaction = {
       caller: ALICE,
       input: {
         function: 'setHiddenItems',

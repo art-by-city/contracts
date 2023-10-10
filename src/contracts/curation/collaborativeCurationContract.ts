@@ -1,63 +1,29 @@
 import { HandlerResult } from 'warp-contracts'
-
 import { ContractAssert, ContractError } from '../../../environment'
 import {
-  AccessControl,
+  AccessControlState,
   Constructor,
   ContractFunctionInput,
   Interaction,
   OnlyOwner,
   OnlyOwnerOrRole,
-  PartialFunctionInput
 } from '../../util'
-import {
-  AddItem,
-  BaseCurationContract,
-  HideItem,
-  OwnableCurationInput,
-  OwnableCurationState,
-  RemoveItem,
-  SetHiddenItems,
-  SetItems,
-  SetMetadata,
-  SetTitle,
-  UnhideItem
-} from './'
+import { BaseCurationContract, OwnableCurationState } from './'
 
 export type CollaborativeCurationState =
-  OwnableCurationState & AccessControl<'curator'>
-
-export interface AddCurator extends ContractFunctionInput {
-  function: 'addCurator',
-  address: string
-}
-
-export interface RemoveCurator extends ContractFunctionInput {
-  function: 'removeCurator',
-  address: string
-}
-
-export type CollaborativeCurationInput = OwnableCurationInput
-  | PartialFunctionInput<AddCurator>
-  | PartialFunctionInput<RemoveCurator>
+  OwnableCurationState & AccessControlState<'curator'>
 
 export type CollaborativeCurationResult = any
 
-export type CollaborativeCurationHandlerResult = HandlerResult<
-  CollaborativeCurationState,
-  CollaborativeCurationResult
->
-
-export function Collaborative<Contract extends Constructor>(
+export function Collaborative<
+  State extends CollaborativeCurationState,
+  Contract extends Constructor
+>(
   ContractBase: Contract
 ) {
   return class Collaborate extends ContractBase {
-    addCurator(
-      state: CollaborativeCurationState,
-      action: Interaction<PartialFunctionInput<AddCurator>>
-    ): HandlerResult<CollaborativeCurationState, CollaborativeCurationResult> {
-      const address = action.input.address
-
+    addCurator(state: State, { input }: Interaction) {
+      const { address } = input
       ContractAssert(typeof address === 'string', 'Address must be a string')
 
       ContractAssert(
@@ -70,11 +36,8 @@ export function Collaborative<Contract extends Constructor>(
       return { state, result: true }
     }
 
-    removeCurator(
-      state: CollaborativeCurationState,
-      action: Interaction<PartialFunctionInput<RemoveCurator>>
-    ): HandlerResult<CollaborativeCurationState, CollaborativeCurationResult> {
-      const address = action.input.address
+    removeCurator(state: State, { input }: Interaction) {
+      const { address } = input
 
       ContractAssert(typeof address === 'string', 'Address must be a string')
 
@@ -88,124 +51,90 @@ export function Collaborative<Contract extends Constructor>(
       return { state, result: true }
     }
   }
-};;
+}
 
-class BaseCurationWithCollaborationContract
-  extends BaseCurationContract<CollaborativeCurationState> {}
-
-export class CollaborativeCurationContract
-  extends Collaborative(BaseCurationWithCollaborationContract)
-{
+export class CollaborativeCurationContract extends Collaborative<
+  CollaborativeCurationState,
+  typeof BaseCurationContract<CollaborativeCurationState>
+>(BaseCurationContract<CollaborativeCurationState>) {
   @OnlyOwner
-  addCurator(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<AddCurator>>
-  ): CollaborativeCurationHandlerResult {
+  addCurator(state: CollaborativeCurationState, action: Interaction) {
     return super.addCurator(state, action)
   }
 
   @OnlyOwner
-  removeCurator(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<RemoveCurator>>
-  ): CollaborativeCurationHandlerResult {
+  removeCurator(state: CollaborativeCurationState, action: Interaction) {
     return super.removeCurator(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
-  setTitle(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<SetTitle>>
-  ): CollaborativeCurationHandlerResult {
+  setTitle(state: CollaborativeCurationState, action: Interaction) {
     return super.setTitle(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
-  setMetadata(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<SetMetadata>>
-  ): CollaborativeCurationHandlerResult {
+  setMetadata(state: CollaborativeCurationState, action: Interaction) {
     return super.setMetadata(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
-  addItem(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<AddItem>>
-  ): CollaborativeCurationHandlerResult {
+  addItem(state: CollaborativeCurationState, action: Interaction) {
     return super.addItem(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
-  removeItem(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<RemoveItem>>
-  ): CollaborativeCurationHandlerResult {
+  removeItem(state: CollaborativeCurationState, action: Interaction) {
     return super.removeItem(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
-  setItems(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<SetItems>>
-  ): CollaborativeCurationHandlerResult {
+  setItems(state: CollaborativeCurationState, action: Interaction) {
     return super.setItems(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
-  hideItem(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<HideItem>>
-  ): CollaborativeCurationHandlerResult {
+  hideItem(state: CollaborativeCurationState, action: Interaction) {
     return super.hideItem(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
-  unhideItem(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<UnhideItem>>
-  ): CollaborativeCurationHandlerResult {
+  unhideItem(state: CollaborativeCurationState,  action: Interaction) {
     return super.unhideItem(state, action)
   }
 
   @OnlyOwnerOrRole('curator')
-  setHiddenItems(
-    state: CollaborativeCurationState,
-    action: Interaction<PartialFunctionInput<SetHiddenItems>>
-  ): CollaborativeCurationHandlerResult {
+  setHiddenItems(state: CollaborativeCurationState, action: Interaction) {
     return super.setHiddenItems(state, action)
   }
 }
 
 export default function handle(
   state: CollaborativeCurationState,
-  action: Interaction<CollaborativeCurationInput>
-): CollaborativeCurationHandlerResult {
+  action: Interaction<ContractFunctionInput>
+) {
   const contract = new CollaborativeCurationContract()
-  const caller = action.caller
-  const input = action.input
 
-  switch (input.function) {
+  switch (action.input.function) {
     case 'addCurator':
-      return contract.addCurator(state, { caller, input })
+      return contract.addCurator(state, action)
     case 'removeCurator':
-      return contract.removeCurator(state, { caller, input })
+      return contract.removeCurator(state, action)
     case 'setTitle':
-      return contract.setTitle(state, { caller, input })
+      return contract.setTitle(state, action)
     case 'setMetadata':
-      return contract.setMetadata(state, { caller, input })
+      return contract.setMetadata(state, action)
     case 'addItem':
-      return contract.addItem(state, { caller, input })
+      return contract.addItem(state, action)
     case 'removeItem':
-      return contract.removeItem(state, { caller, input })
+      return contract.removeItem(state, action)
     case 'setItems':
-      return contract.setItems(state, { caller, input })
+      return contract.setItems(state, action)
     case 'hideItem':
-      return contract.hideItem(state, { caller, input })
+      return contract.hideItem(state, action)
     case 'unhideItem':
-      return contract.unhideItem(state, { caller, input })
+      return contract.unhideItem(state, action)
     case 'setHiddenItems':
-      return contract.setHiddenItems(state, { caller, input })
+      return contract.setHiddenItems(state, action)
     default:
       throw new ContractError('Invalid input')
   }

@@ -10,9 +10,14 @@ import { NodePath } from '@babel/core'
 
 const contracts: { [key: string]: string } = {
   'usernames': 'src/contracts/usernames/contract.ts',
-  'collaborativeWhitelistCuration':
+  'atomicLicense': 'src/contracts/atomic-license/atomicLicense.ts',
+  'collaborativeWhitelistCurationContract':
     'src/contracts/curation/collaborativeWhitelistCurationContract.ts',
-  'atomicLicense': 'src/contracts/atomic-license/atomicLicense.ts'
+  'ownableCurationContract': 'src/contracts/curation/ownableCurationContract.ts',
+  'whitelistCurationContract':
+    'src/contracts/curation/whitelistCurationContract.ts',
+  'collaborativeCurationContract':
+    'src/contracts/curation/collaborativeCurationContract.ts'
 }
 
 const babelOpts: RollupBabelInputPluginOptions = {

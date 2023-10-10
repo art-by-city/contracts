@@ -31,7 +31,7 @@
     "rollup-plugin-prettier": "^3.0.0",
     "ts-node": "^10.4.0",
     "typescript": "^5.1.6",
-    "warp-contracts": "^1.4.16",
+    "warp-contracts": "^1.4.19",
     "warp-contracts-plugin-deploy": "^1.0.9"
   },
   "scripts": {
