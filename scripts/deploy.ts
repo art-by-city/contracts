@@ -3,8 +3,14 @@ import fs from 'fs/promises'
 import Arweave from 'arweave'
 import { JWKInterface } from 'arweave/node/lib/wallet'
 import minimist from 'minimist'
-import { defaultCacheOptions, Tag, Transaction, Warp, WarpFactory } from 'warp-contracts'
-import { DeployPlugin } from 'warp-contracts-plugin-deploy'
+import { DataItem } from 'warp-arbundles'
+import {
+  defaultCacheOptions, 
+  Tag,
+  Warp,
+  WarpFactory
+} from 'warp-contracts'
+import { ArweaveSigner, DeployPlugin } from 'warp-contracts-plugin-deploy'
 
 // const APP_NAME = process.env.APP_NAME || 'ArtByCity-Development'
 // const APP_VERSION = process.env.APP_VERSION || 'development'
@@ -31,12 +37,10 @@ export async function deployWarpContract(
   contractPath: string,
   contractName: string,
   wallet: JWKInterface,
-  deployOnly: boolean = false,
   contractVersion: string = '0.0.1',
-  initialState?: any
+  initState?: string
 ) {
   const src = (await fs.readFile(contractPath)).toString()
-  const initState = JSON.stringify(initialState)
   const tags = [
     new Tag('Protocol', 'ArtByCity'),
     new Tag('Contract-Name', contractName),
@@ -45,31 +49,27 @@ export async function deployWarpContract(
 
   console.log(`Deploying contract ${contractName} @ ${contractVersion}`)
 
-  if (deployOnly) {
-    const source = await warp.createSource({ src }, wallet, true) as Transaction
-    
-    for (let i = 0; i < tags.length; i++) {
-      source.addTag(tags[i].name, tags[i].value)
-    }
-
-    await arweave.transactions.sign(source, wallet)
-    await warp.saveSource(source, true)
+  if (!initState) {
+    const signer = new ArweaveSigner(wallet)
+    const source = await warp.createSource({ src }, signer) as DataItem    
+    const deployedSourceId = await warp.saveSource(source)
 
     console.log(`Deployed contract ${contractName} @ ${contractVersion}`)
-    console.log(`Contract Source TXID: ${source.id}`)
+    console.log(`Contract Source TXID: ${deployedSourceId}`)
 
     return { srcTxId: source.id }
   } else {
+    const signer = new ArweaveSigner(wallet)
     const { contractTxId, srcTxId } = await warp.deploy({
-      wallet,
+      wallet: signer,
       initState,
       src,
       tags
-    }, true)
+    })
 
-    console.log(`Deployed ${contractName} contract:`)
-    console.log(`\tContract Source TXID: ${srcTxId}`)
-    console.log(`\tInitial State TXID: ${contractTxId}`)
+    console.log(`Deployed contract ${contractName} @ ${contractVersion}`)
+    console.log(`Contract Source TXID: ${srcTxId}`)
+    console.log(`Initial State TXID: ${contractTxId}`)
 
     return { contractTxId, srcTxId }
   }
@@ -98,14 +98,21 @@ export async function deployWarpContract(
       || args.v
       || args.version
       || process.env.CONTRACT_VERSION
+    const initState = args._[5]
+      || args.i
+      || args.initState
+      || process.env.INIT_STATE
 
     const wallet = JSON.parse((await fs.readFile(keyfilePath)).toString())
+    const initialState = deployOnly
+      ? undefined
+      : (await fs.readFile(initState)).toString()
     await deployWarpContract(
       contractPath,
       contractName,
       wallet,
-      deployOnly,
-      contractVersion
+      contractVersion,
+      initialState
     )
   } catch (error) {
     console.error(error)
