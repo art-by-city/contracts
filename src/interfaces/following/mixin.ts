@@ -1,12 +1,12 @@
-import { Constructor, Interaction } from '../../util'
+import { Constructor, ContractConstructor, Interaction } from '../../util'
 import { ContractAssert, ContractError } from '../../../environment'
 import { FollowingState } from './state'
 
 export function WithFollowing<
-  State extends FollowingState,
-  Contract extends Constructor
->(BaseContract: Contract) {
-  return class WithFollowing extends BaseContract {
+  State extends FollowingState,  
+  Contract extends ContractConstructor<State>
+>(contract?: Contract) {
+  return class WithFollowing extends (contract || class {} as Contract) {
     follow(state: State, { input }: Interaction) {
       const { address } = input
 

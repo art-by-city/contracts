@@ -29,10 +29,9 @@ export class OwnerlessFollowingCurationContract extends WithFollowing(
   BaseCurationContract<OwnerlessFollowingCurationState>
 ) {}
 
-export class FollowingCurationContract extends WithFollowing<
-  FollowingCurationState,
-  typeof OwnableCurationContract<FollowingCurationState>
->(OwnableCurationContract<FollowingCurationState>) {
+export class FollowingCurationContract extends WithFollowing(
+  OwnableCurationContract<FollowingCurationState>
+) {
   @OnlyOwner
   follow(state: FollowingCurationState, action: Interaction) {
     return super.follow(state, action)
@@ -40,11 +39,11 @@ export class FollowingCurationContract extends WithFollowing<
 
   @OnlyOwner
   unfollow(state: FollowingCurationState, action: Interaction) {
-    return super.unfollow(state, action)
+    return super.unfollow(state, action) as { state: FollowingCurationState, result: any }
   }
 
   following(state: FollowingCurationState) {
-    return super.following(state)
+    return super.following(state) as { state: FollowingCurationState, result: any }
   }
 }
 
@@ -72,11 +71,11 @@ export default function handle(
     case 'setHiddenItems':
       return contract.setHiddenItems(state, action)
     case 'follow':
-      return contract.follow(state, action)
+      return contract.follow(state, action) as { state: FollowingCurationState, result: FollowingCurationResult }
     case 'unfollow':
-      return contract.unfollow(state, action)
+      return contract.unfollow(state, action) as { state: FollowingCurationState, result: FollowingCurationResult }
     case 'following':
-      return contract.following(state)
+      return contract.following(state) as { state: FollowingCurationState, result: FollowingCurationResult }
     default:
       throw new ContractError('Invalid input')
   }
