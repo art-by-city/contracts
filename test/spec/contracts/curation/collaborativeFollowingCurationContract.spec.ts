@@ -3,8 +3,8 @@ import { expect } from 'chai'
 
 import { ContractError } from '../../../../environment'
 import {
-  collaborativeWhitelistCurationHandle as handle,
-  CollaborativeWhitelistCurationState
+  collaborativeFollowingCurationHandle as handle,
+  CollaborativeFollowingCurationState
 } from '../../../../src/contracts/curation'
 
 const CONTRACT_OWNER = '0xCONTRACT-OWNER'
@@ -13,7 +13,7 @@ const BOB = '0xBOB'
 const ITEM_1 = '0xITEM-1'
 const ITEM_2 = '0xITEM-2'
 const ITEM_3 = '0xITEM-3'
-let initState: CollaborativeWhitelistCurationState
+let initState: CollaborativeFollowingCurationState
 function resetState() {
   initState = {
     owner: CONTRACT_OWNER,
@@ -24,11 +24,11 @@ function resetState() {
     roles: {
       curator: []
     },
-    addressWhitelist: []
+    following: []
   }
 }
 
-describe('collaborative whitelist curation contract', () => {
+describe('collaborative following curation contract', () => {
   beforeEach(resetState)
 
   it('should throw on invalid input', () => {
@@ -544,28 +544,28 @@ describe('collaborative whitelist curation contract', () => {
   })
 
   /**
-   * Whitelist Management
+   * Following Management
    */
-  it('should allow owner to add to whitelist', () => {
+  it('should allow owner to add to follow an address', () => {
     const interaction = {
       caller: CONTRACT_OWNER,
       input: {
-        function: 'addToWhitelist',
+        function: 'follow',
         address: ALICE
       }
     }
 
     const { state } = handle(initState, interaction)
 
-    expect(state.addressWhitelist).to.have.lengthOf(1)
-    expect(state.addressWhitelist).to.include(ALICE)
+    expect(state.following).to.have.lengthOf(1)
+    expect(state.following).to.include(ALICE)
   })
 
-  it('should allow curators to add to whitelist', () => {
+  it('should allow curators to follow an address', () => {
     const interaction = {
       caller: ALICE,
       input: {
-        function: 'addToWhitelist',
+        function: 'follow',
         address: BOB
       }
     }
@@ -578,15 +578,15 @@ describe('collaborative whitelist curation contract', () => {
       interaction
     )
 
-    expect(state.addressWhitelist).to.have.lengthOf(1)
-    expect(state.addressWhitelist).to.include(BOB)
+    expect(state.following).to.have.lengthOf(1)
+    expect(state.following).to.include(BOB)
   })
 
-  it('should prevent everyone else from adding to whitelist', () => {
+  it('should prevent everyone else from following addresses', () => {
     const interaction = {
       caller: BOB,
       input: {
-        function: 'addToWhitelist',
+        function: 'follow',
         address: ALICE
       }
     }
@@ -594,11 +594,11 @@ describe('collaborative whitelist curation contract', () => {
     expect(() => handle(initState, interaction)).to.throw(ContractError)
   })
 
-  it('should allow owner to remove from whitelist', () => {
+  it('should allow owner to unfollow addresses', () => {
     const interaction = {
       caller: CONTRACT_OWNER,
       input: {
-        function: 'removeFromWhitelist',
+        function: 'unfollow',
         address: ALICE
       }
     }
@@ -606,21 +606,21 @@ describe('collaborative whitelist curation contract', () => {
     const { state } = handle(
       {
         ...initState,
-        addressWhitelist: [ ALICE, BOB ]
+        following: [ ALICE, BOB ]
       },
       interaction
     )
 
-    expect(state.addressWhitelist).to.have.lengthOf(1)
-    expect(state.addressWhitelist).to.not.include(ALICE)
-    expect(state.addressWhitelist).to.include(BOB)
+    expect(state.following).to.have.lengthOf(1)
+    expect(state.following).to.not.include(ALICE)
+    expect(state.following).to.include(BOB)
   })
 
-  it('should allow curators to remove from whitelist', () => {
+  it('should allow curators to unfollow addresses', () => {
     const interaction = {
       caller: ALICE,
       input: {
-        function: 'removeFromWhitelist',
+        function: 'unfollow',
         address: ALICE
       }
     }
@@ -629,21 +629,21 @@ describe('collaborative whitelist curation contract', () => {
       {
         ...initState,
         roles: { curator: [ ALICE ] },
-        addressWhitelist: [ ALICE, BOB ]
+        following: [ ALICE, BOB ]
       },
       interaction
     )
 
-    expect(state.addressWhitelist).to.have.lengthOf(1)
-    expect(state.addressWhitelist).to.not.include(ALICE)
-    expect(state.addressWhitelist).to.include(BOB)
+    expect(state.following).to.have.lengthOf(1)
+    expect(state.following).to.not.include(ALICE)
+    expect(state.following).to.include(BOB)
   })
 
-  it('should prevent everyone else from removing from whitelist', () => {
+  it('should prevent everyone else from unfollowing addresses', () => {
     const interaction = {
       caller: BOB,
       input: {
-        function: 'removeFromWhitelist',
+        function: 'unfollow',
         address: ALICE
       }
     }
@@ -651,7 +651,7 @@ describe('collaborative whitelist curation contract', () => {
     expect(() => handle(
       {
         ...initState,
-        addressWhitelist: [ ALICE, BOB ]
+        following: [ ALICE, BOB ]
       },
       interaction
     )).to.throw(ContractError)

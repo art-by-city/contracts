@@ -5,6 +5,14 @@ export interface Constructor<T = {}> {
   new (...args: any[]): T
 }
 
+export class BaseContract<T> {
+  constructor() {}
+}
+
+export interface ContractConstructor<State, Contract = BaseContract<State>> {
+  new (...args: any[]): Contract
+}
+
 export type ContractFunctionInput = {
   function: string
   [key: string]: any

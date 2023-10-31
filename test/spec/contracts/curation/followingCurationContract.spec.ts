@@ -3,10 +3,9 @@ import { expect } from 'chai'
 
 import { ContractError } from '../../../../environment'
 import {
-  whitelistCurationHandle as handle,
-  WhitelistCurationState
+  followingCurationHandle as handle,
+  FollowingCurationState
 } from '../../../../src/contracts/curation'
-import { Interaction } from '../../../../src/util'
 
 const CONTRACT_OWNER = '0xCONTRACT-OWNER'
 const ALICE = '0xALICE'
@@ -14,7 +13,7 @@ const BOB = '0xBOB'
 const ITEM_1 = '0xITEM-1'
 const ITEM_2 = '0xITEM-2'
 const ITEM_3 = '0xITEM-3'
-let initState: WhitelistCurationState
+let initState: FollowingCurationState
 function resetState() {
   initState = {
     owner: CONTRACT_OWNER,
@@ -22,15 +21,15 @@ function resetState() {
     metadata: {},
     items: [],
     hidden: [],
-    addressWhitelist: []
+    following: []
   }
 }
 
-describe('ownable whitelist curation contract', () => {
+describe('Ownable Following Curation Contract', () => {
   beforeEach(resetState)
 
   /**
-   * Whitelist management
+   * Following management
    */
   it('should throw on invalid input', () => {
     expect(() => {
@@ -38,26 +37,26 @@ describe('ownable whitelist curation contract', () => {
     }).to.throw(ContractError)
   })
 
-  it('should allow the owner to add to the whitelist', () => {
+  it('should allow the owner to add followed addresses', () => {
     const interaction = {
       caller: CONTRACT_OWNER,
       input: {
-        function: 'addToWhitelist',
+        function: 'follow',
         address: ALICE
       }
     }
 
     const { state } = handle(initState, interaction)
 
-    expect(state.addressWhitelist).to.have.lengthOf(1)
-    expect(state.addressWhitelist).to.include(ALICE)
+    expect(state.following).to.have.lengthOf(1)
+    expect(state.following).to.include(ALICE)
   })
 
-  it('should require addresses added to the whitelist are strings', () => {
+  it('should require followed addresses to be strings', () => {
     const interaction = {
       caller: CONTRACT_OWNER,
       input: {
-        function: 'addToWhitelist',
+        function: 'follow',
         address: 5
       }
     }
@@ -65,11 +64,11 @@ describe('ownable whitelist curation contract', () => {
     expect(() => handle(initState, interaction)).to.throw(ContractError)
   })
 
-  it('should require addresses added to the whitelist are unique', () => {
+  it('should require followed addresses to be unique', () => {
     const interaction = {
       caller: CONTRACT_OWNER,
       input: {
-        function: 'addToWhitelist',
+        function: 'follow',
         address: ALICE
       }
     }
@@ -77,17 +76,17 @@ describe('ownable whitelist curation contract', () => {
     expect(() => handle(
       {
         ...initState,
-        addressWhitelist: [ ALICE ]
+        following: [ ALICE ]
       },
       interaction
     )).to.throw(ContractError)
   })
 
-  it('should prevent non-owners from adding to the whitelist', () => {
+  it('should prevent non-owners from following addresses', () => {
     const interaction = {
       caller: ALICE,
       input: {
-        function: 'addToWhitelist',
+        function: 'follow',
         address: ALICE
       }
     }
@@ -95,29 +94,29 @@ describe('ownable whitelist curation contract', () => {
     expect(() => handle(initState, interaction)).to.throw(ContractError)
   })
 
-  it('should allow the owner to remove from the whitelist', () => {
+  it('should allow the owner to unfollow addresses', () => {
     const interaction = {
       caller: CONTRACT_OWNER,
       input: {
-        function: 'removeFromWhitelist',
+        function: 'unfollow',
         address: ALICE
       }
     }
 
     const { state } = handle(
-      { ...initState, addressWhitelist: [ ALICE, BOB ] },
+      { ...initState, following: [ ALICE, BOB ] },
       interaction
     )
 
-    expect(state.addressWhitelist).to.have.lengthOf(1)
-    expect(state.addressWhitelist).to.include(BOB)
+    expect(state.following).to.have.lengthOf(1)
+    expect(state.following).to.include(BOB)
   })
 
-  it('should require addresses removed from the whitelist are strings', () => {
+  it('should require unfollowed addresses to be strings', () => {
     const interaction = {
       caller: CONTRACT_OWNER,
       input: {
-        function: 'removeFromWhitelist',
+        function: 'unfollow',
         address: 5
       }
     }
@@ -125,11 +124,11 @@ describe('ownable whitelist curation contract', () => {
     expect(() => handle(initState, interaction)).to.throw(ContractError)
   })
 
-  it('should require addresses removed from the whitelist exist', () => {
+  it('should require unfollowed addresses to exist', () => {
     const interaction = {
       caller: CONTRACT_OWNER,
       input: {
-        function: 'removeFromWhitelist',
+        function: 'unfollow',
         address: ALICE
       }
     }
@@ -137,18 +136,18 @@ describe('ownable whitelist curation contract', () => {
     expect(() => handle(initState, interaction)).to.throw(ContractError)
   })
 
-  it('should prevent non-owners from removing from the whitelist', () => {
+  it('should prevent non-owners from unfollowing addresses', () => {
     const interaction = {
       caller: ALICE,
       input: {
-        function: 'removeFromWhitelist',
+        function: 'unfollow',
         address: BOB
       }
     }
 
     expect(() => handle({
       ...initState,
-      addressWhitelist: [ BOB ]
+      following: [ BOB ]
     }, interaction)).to.throw(ContractError)
   })
 
@@ -160,7 +159,7 @@ describe('ownable whitelist curation contract', () => {
       caller: CONTRACT_OWNER,
       input: {
         function: 'setTitle',
-        title: 'My Whitelist Curation'
+        title: 'My Following Curation'
       }
     }
 

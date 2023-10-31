@@ -37,7 +37,7 @@
   "scripts": {
     "build": "rimraf dist && ts-node --project node.tsconfig.json scripts/build.ts",
     "deploy": "ts-node --project node.tsconfig.json scripts/deploy.ts",
-    "test": "mocha -r ts-node/register test/spec/**/*.ts",
+    "test": "mocha -r ts-node/register test/spec/*/**/*.ts",
     "test:e2e": "mocha -r ts-node/register test/e2e/**/*.ts",
     "getLatestState": "ts-node --project node.tsconfig.json scripts/getLatestState.ts",
     "updateState": "ts-node --project node.tsconfig.json scripts/updateState.ts",

@@ -11,11 +11,11 @@ import { NodePath } from '@babel/core'
 const contracts: { [key: string]: string } = {
   'usernames': 'src/contracts/usernames/contract.ts',
   'atomicLicense': 'src/contracts/atomic-license/atomicLicense.ts',
-  'collaborativeWhitelistCurationContract':
-    'src/contracts/curation/collaborativeWhitelistCurationContract.ts',
+  'collaborativeFollowingCurationContract':
+    'src/contracts/curation/collaborativeFollowingCurationContract.ts',
   'ownableCurationContract': 'src/contracts/curation/ownableCurationContract.ts',
-  'whitelistCurationContract':
-    'src/contracts/curation/whitelistCurationContract.ts',
+  'followingCurationContract':
+    'src/contracts/curation/followingCurationContract.ts',
   'collaborativeCurationContract':
     'src/contracts/curation/collaborativeCurationContract.ts'
 }
