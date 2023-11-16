@@ -1,4 +1,4 @@
-import { Constructor, ContractConstructor, Interaction } from '../../util'
+import { ContractConstructor, Interaction } from '../../util'
 import { ContractAssert, ContractError } from '../../../environment'
 import { FollowingState } from './state'
 
