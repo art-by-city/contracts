@@ -17,7 +17,8 @@ const contracts: { [key: string]: string } = {
   'followingCurationContract':
     'src/contracts/curation/followingCurationContract.ts',
   'collaborativeCurationContract':
-    'src/contracts/curation/collaborativeCurationContract.ts'
+    'src/contracts/curation/collaborativeCurationContract.ts',
+  'following': 'src/contracts/following/following.ts'
 }
 
 const babelOpts: RollupBabelInputPluginOptions = {
