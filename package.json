@@ -1,0 +1,51 @@
+{
+  "name": "@artbycity/contracts",
+  "version": "0.0.1",
+  "description": "Art By City Smart Contracts",
+  "license": "AGPL-3.0-only",
+  "contributors": [
+    {
+      "name": "Jim Toth",
+      "email": "jim@artby.city"
+    }
+  ],
+  "homepage": "https://github.com/art-by-city/contracts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/art-by-city/contracts"
+  },
+  "bugs": {
+    "url": "https://github.com/art-by-city/contracts/issues"
+  },
+  "keywords": [
+    "arweave",
+    "artbycity",
+    "sdk",
+    "art-by-city",
+    "permaweb",
+    "publishing",
+    "art",
+    "curation",
+    "contracts",
+    "smart-contracts"
+  ],
+  "engines": {
+    "node": "~20.15.1"
+  },
+  "scripts": {
+    "process:build": "npm run process:clean && tsx scripts/bundle.ts",
+    "process:clean": "rimraf [ dist ]",
+    "test": "npm run process:build && mocha test/spec/**/*.ts"
+  },
+  "devDependencies": {
+    "@permaweb/ao-loader": "^0.0.36",
+    "@types/chai": "^4.3.19",
+    "@types/mocha": "^10.0.7",
+    "@types/node": "^22.5.4",
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
+    "rimraf": "^5.0.10",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.2"
+  }
+}
