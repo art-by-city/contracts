@@ -35,10 +35,13 @@
   "scripts": {
     "process:build": "npm run process:clean && tsx scripts/bundle.ts",
     "process:clean": "rimraf [ dist ]",
+    "process:publish":
+      "npm run process:build && tsx scripts/publish-process.ts",
     "test": "npm run process:build && mocha test/spec/**/*.ts"
   },
   "devDependencies": {
     "@permaweb/ao-loader": "^0.0.36",
+    "@permaweb/aoconnect": "^0.0.59",
     "@types/chai": "^4.3.19",
     "@types/mocha": "^10.0.7",
     "@types/node": "^22.5.4",

@@ -4,24 +4,36 @@ import fs from 'fs'
 import { bundle } from './lua-bundler'
 
 async function main() {
-  console.log('Bundling Lua...')
-  const luaEntryPath = path.join(
-    path.resolve(),
-    // './src/contracts/relay-registry/relay-registry.lua'
-  )
+  const contracts = [
+    'atomic-license',
+    'atomic-license-evolved'
+  ]
 
-  if (!fs.existsSync(luaEntryPath)) {
-    throw new Error(`Lua entry path not found: ${luaEntryPath}`)
+  for (const contract of contracts) {
+    console.log(`Bundling Lua for ${contract}`)
+    const luaEntryPath = path.join(
+      path.resolve(),
+      `./src/${contract}.lua`
+    )
+
+    if (!fs.existsSync(luaEntryPath)) {
+      throw new Error(`Lua entry path not found: ${luaEntryPath}`)
+    }
+
+    const bundledLua = bundle(luaEntryPath)
+
+    if (!fs.existsSync(path.join(path.resolve(), './dist'))) {
+      fs.mkdirSync(path.join(path.resolve(), './dist'))
+    }
+
+    fs.writeFileSync(
+      path.join(path.resolve(), `./dist/${contract}.lua`),
+      bundledLua
+    )
+    console.log(`Done Bundling Lua for ${contract}`)
   }
 
-  const bundledLua = bundle(luaEntryPath)
-
-  if (!fs.existsSync(path.join(path.resolve(), './dist'))) {
-    fs.mkdirSync(path.join(path.resolve(), './dist'))
-  }
-
-  fs.writeFileSync(path.join(path.resolve(), './dist/bundled.lua'), bundledLua)
-  console.log('Done Bundling Lua!')
+  console.log('Done bundling all Lua contracts')
 }
 
 main()
