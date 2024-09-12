@@ -786,7 +786,9 @@ describe('Curation Contract', () => {
           .that.includes('Invalid Item-Index')
       })
     })
+  })
 
+  describe('Following', () => {
     describe('Following', () => {
       it('Allows Owner to follow an address', async () => {
         const result = await handle({
@@ -910,6 +912,364 @@ describe('Curation Contract', () => {
         expect(JSON.parse(result.Messages[0].Data).sort())
           .to.deep.equal(addresses)
       })
+    })
+  })
+
+  describe('Ownable', () => {
+    it('Allows anyone to get Owner', async () => {
+      const result = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [{ name: 'Action', value: 'Get-Owner' }]
+      })
+
+      expect(result.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(result.Messages[0].Data).to.equal(OWNER_ADDRESS)
+    })
+
+    it('Allow transfer of Owner', async () => {
+      const transferOwnerResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Transfer-Owner' },
+          { name: 'New-Owner', value: ALICE_ADDRESS }
+        ]
+      })
+
+      expect(transferOwnerResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(transferOwnerResult.Messages[0].Data).to.equal(ALICE_ADDRESS)
+
+      const getOwnerResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [{ name: 'Action', value: 'Get-Owner' }]
+      })
+
+      expect(getOwnerResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(getOwnerResult.Messages[0].Data).to.equal(ALICE_ADDRESS)
+    })
+
+    it('Prevents anyone else from transferring Owner', async () => {
+      const result = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Transfer-Owner' },
+          { name: 'New-Owner', value: ALICE_ADDRESS }
+        ]
+      })
+
+      expect(result.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+    })
+
+    it('Validates when transferring Owner', async () => {
+      const result = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [{ name: 'Action', value: 'Transfer-Owner' }]
+      })
+
+      expect(result.Error)
+        .to.be.a('string')
+        .that.includes('New-Owner tag is required')
+    })
+
+    it('Allows new Owner control', async () => {
+      await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Transfer-Owner' },
+          { name: 'New-Owner', value: ALICE_ADDRESS }
+        ]
+      })
+
+      const aliceTitle = 'alice title'
+      const setTitleResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Set-Title' },
+          { name: 'Title', value: aliceTitle }
+        ]
+      })
+
+      expect(setTitleResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(setTitleResult.Messages[0].Data).to.equal(aliceTitle)
+
+      const aliceMetadata = { description: 'alice description' }
+      const aliceMetadataString = JSON.stringify(aliceMetadata)
+      const setMetadataResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Set-Metadata' }
+        ],
+        Data: aliceMetadataString
+      })
+
+      expect(setMetadataResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(setMetadataResult.Messages[0].Data).to.equal(aliceMetadataString)
+
+      const aliceItem = 'fancy pants yancy'
+      const addItemResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Add-Item' },
+          { name: 'Item', value: aliceItem }
+        ]
+      })
+
+      expect(addItemResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(addItemResult.Messages[0].Data)
+        .to.be.a('string')
+        .that.equals(aliceItem)
+
+      const removeItemResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Remove-Item' },
+          { name: 'Item-Index', value: '1' }
+        ]
+      })
+
+      expect(removeItemResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(removeItemResult.Messages[0].Data)
+        .to.be.a('string')
+        .that.equals(aliceItem)
+
+      const aliceItems = [ 'one', 'two', 'three' ]
+      const result = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Set-Items' },
+          { name: 'Items', value: JSON.stringify(aliceItems) }
+        ]
+      })
+
+      expect(result.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(result.Messages[0].Data)
+        .to.be.a('string')
+        .that.equals(aliceItems.length.toString())
+
+      const hideItemIndex = 1
+      const hideItemIndexString = (hideItemIndex + 1).toString()
+      const hideItemResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Hide-Item' },
+          { name: 'Item-Index', value: hideItemIndexString }
+        ]
+      })
+
+      expect(hideItemResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(hideItemResult.Messages[0].Data)
+        .to.be.a('string')
+        .that.equals(aliceItems[hideItemIndex])
+
+      const unhideItemResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Unhide-Item' },
+          { name: 'Item-Index', value: hideItemIndexString }
+        ]
+      })
+
+      expect(unhideItemResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(unhideItemResult.Messages[0].Data)
+        .to.be.a('string')
+        .that.equals(aliceItems[hideItemIndex])
+
+      const followResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Follow' },
+          { name: 'Follow-Address', value: CHARLS_ADDRESS }
+        ]
+      })
+
+      expect(followResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(followResult.Messages[0].Data).to.equal(CHARLS_ADDRESS)
+
+      await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Follow' },
+          { name: 'Follow-Address', value: BOB_ADDRESS }
+        ]
+      })
+      const unfollowResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Unfollow' },
+          { name: 'Unfollow-Address', value: BOB_ADDRESS }
+        ]
+      })
+
+      expect(unfollowResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(unfollowResult.Messages[0].Data).to.equal(BOB_ADDRESS)
+
+      const transferOwnerResult = await handle({
+        From: ALICE_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Transfer-Owner' },
+          { name: 'New-Owner', value: BOB_ADDRESS }
+        ]
+      })
+
+      expect(transferOwnerResult.Messages)
+        .to.be.an('array')
+        .that.is.not.empty
+      expect(transferOwnerResult.Messages[0].Data).to.equal(BOB_ADDRESS)
+    })
+
+    it('Prevents process owner control after transfer', async () => {
+      await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Transfer-Owner' },
+          { name: 'New-Owner', value: ALICE_ADDRESS }
+        ]
+      })
+
+      const setTitleResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Set-Title' },
+          { name: 'Title', value: 'new title' }
+        ]
+      })
+
+      expect(setTitleResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const setMetadataResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Set-Metadata' }
+        ],
+        Data: JSON.stringify({ description: 'new description' })
+      })
+
+      expect(setMetadataResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const addItemResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Add-Item' },
+          { name: 'Item', value: 'item' }
+        ]
+      })
+
+      expect(addItemResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const removeItemResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Remove-Item' },
+          { name: 'Item-Index', value: '1' }
+        ]
+      })
+
+      expect(removeItemResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const setItemsResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Set-Items' },
+          { name: 'Items', value: JSON.stringify(['one']) }
+        ]
+      })
+
+      expect(setItemsResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const hideItemResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Hide-Item' },
+          { name: 'Item-Index', value: '2' }
+        ]
+      })
+
+      expect(hideItemResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const unhideItemResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Unhide-Item' },
+          { name: 'Item-Index', value: '2' }
+        ]
+      })
+
+      expect(unhideItemResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const followResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Follow' },
+          { name: 'Follow-Address', value: ALICE_ADDRESS }
+        ]
+      })
+
+      expect(followResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const unfollowResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Unfollow' },
+          { name: 'Unfollow-Address', value: ALICE_ADDRESS }
+        ]
+      })
+
+      expect(unfollowResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
+
+      const transferOwnerResult = await handle({
+        From: OWNER_ADDRESS,
+        Tags: [
+          { name: 'Action', value: 'Transfer-Owner' },
+          { name: 'New-Owner', value: OWNER_ADDRESS }
+        ]
+      })
+
+      expect(transferOwnerResult.Error)
+        .to.be.a('string')
+        .that.includes('This action is only available to the process Owner')
     })
   })
 })

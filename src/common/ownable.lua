@@ -1,11 +1,5 @@
 local Ownable = {
-  Handlers = {},
-  assert_is_owner = function (address)
-    assert(
-      address == Owner,
-      'This action is only available to the process Owner ' .. Owner
-    )
-  end
+  Handlers = {}
 }
 
 function Ownable.Handlers.getOwner(msg)

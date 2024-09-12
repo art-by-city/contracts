@@ -10,15 +10,13 @@ local function curationContract()
     and json.encode({ description = ao.env.Process.Tags['Description'] })
     or ''
   Items = {}
+  Owner = Owner or ao.env.Process.Owner
 
   Handlers.add(
     'setTitle',
     Handlers.utils.hasMatchingTag('Action', 'Set-Title'),
     function(msg)
-      assert(
-        msg.From == ao.env.Process.Owner,
-        'This action is only available to the process Owner'
-      )
+      Ownable.assert_is_owner(msg.From)
       assert(msg.Tags['Title'], 'Title tag is required')
 
       Title = msg.Tags['Title']
@@ -47,10 +45,7 @@ local function curationContract()
     'setMetadata',
     Handlers.utils.hasMatchingTag('Action', 'Set-Metadata'),
     function(msg)
-      assert(
-        msg.From == ao.env.Process.Owner,
-        'This action is only available to the process Owner'
-      )
+      Ownable.assert_is_owner(msg.From)
 
       local success = pcall(json.decode, msg.Data)
 
@@ -83,10 +78,7 @@ local function curationContract()
     'addItem',
     Handlers.utils.hasMatchingTag('Action', 'Add-Item'),
     function(msg)
-      assert(
-        msg.From == ao.env.Process.Owner,
-        'This action is only available to the process Owner'
-      )
+      Ownable.assert_is_owner(msg.From)
       assert(msg.Tags['Item'], 'Item tag is required')
 
       table.insert(Items, {
@@ -128,10 +120,7 @@ local function curationContract()
     'removeItem',
     Handlers.utils.hasMatchingTag('Action', 'Remove-Item'),
     function(msg)
-      assert(
-        msg.From == ao.env.Process.Owner,
-        'This action is only available to the process Owner'
-      )
+      Ownable.assert_is_owner(msg.From)
       assert(msg.Tags['Item-Index'], 'Item-Index tag is required')
 
       local _, itemIndex = pcall(tonumber, msg.Tags['Item-Index'])
@@ -158,10 +147,7 @@ local function curationContract()
     'setItems',
     Handlers.utils.hasMatchingTag('Action', 'Set-Items'),
     function(msg)
-      assert(
-        msg.From == ao.env.Process.Owner,
-        'This action is only available to the process Owner'
-      )
+      Ownable.assert_is_owner(msg.From)
 
       local success, items
 
@@ -201,10 +187,7 @@ local function curationContract()
     'hideItem',
     Handlers.utils.hasMatchingTag('Action', 'Hide-Item'),
     function(msg)
-      assert(
-        msg.From == ao.env.Process.Owner,
-        'This action is only available to the process Owner'
-      )
+      Ownable.assert_is_owner(msg.From)
       assert(msg.Tags['Item-Index'], 'Item-Index tag is required')
 
       local _, itemIndex = pcall(tonumber, msg.Tags['Item-Index'])
@@ -230,10 +213,7 @@ local function curationContract()
     'unhideItem',
     Handlers.utils.hasMatchingTag('Action', 'Unhide-Item'),
     function(msg)
-      assert(
-        msg.From == ao.env.Process.Owner,
-        'This action is only available to the process Owner'
-      )
+      Ownable.assert_is_owner(msg.From)
       assert(msg.Tags['Item-Index'], 'Item-Index tag is required')
 
       local _, itemIndex = pcall(tonumber, msg.Tags['Item-Index'])
@@ -276,10 +256,19 @@ local function curationContract()
   Handlers.add(
     'getFollowing',
     Handlers.utils.hasMatchingTag('Action', 'Get-Following'),
-    function (msg)
-      Ownable.assert_is_owner(msg.From)
-      FollowingHandlers.getFollowing(msg)
-    end
+    FollowingHandlers.getFollowing
+  )
+
+  Handlers.add(
+    'getOwner',
+    Handlers.utils.hasMatchingTag('Action', 'Get-Owner'),
+    Ownable.Handlers.getOwner
+  )
+
+  Handlers.add(
+    'transferOwner',
+    Handlers.utils.hasMatchingTag('Action', 'Transfer-Owner'),
+    Ownable.Handlers.transferOwner
   )
 end
 
