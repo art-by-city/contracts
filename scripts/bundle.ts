@@ -5,13 +5,13 @@ import { bundle } from './lua-bundler'
 
 async function main() {
   const contracts = [
-    'atomic-license',
-    'atomic-license-evolved',
-    'curation',
-    'following'
+    { contract: 'atomic-license' },
+    { contract: 'atomic-license-evolved' },
+    { contract: 'curation' },
+    { contract: 'following' }
   ]
 
-  for (const contract of contracts) {
+  for (const { contract } of contracts) {
     console.log(`Bundling Lua for ${contract}`)
     const luaEntryPath = path.join(
       path.resolve(),

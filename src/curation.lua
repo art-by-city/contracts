@@ -1,6 +1,8 @@
 local json = require('json')
 local utils = require('.utils')
 
+local FollowingHandlers = require('.handlers.following')
+
 Title = ao.env.Process.Tags['Title'] or ''
 Metadata = ao.env.Process.Tags['Description']
   and json.encode({ description = ao.env.Process.Tags['Description'] })
@@ -249,4 +251,22 @@ Handlers.add(
       error('Invalid Item-Index')
     end
   end
+)
+
+Handlers.add(
+  'follow',
+  Handlers.utils.hasMatchingTag('Action', 'Follow'),
+  FollowingHandlers.follow
+)
+
+Handlers.add(
+  'unfollow',
+  Handlers.utils.hasMatchingTag('Action', 'Unfollow'),
+  FollowingHandlers.unfollow
+)
+
+Handlers.add(
+  'getFollowing',
+  Handlers.utils.hasMatchingTag('Action', 'Get-Following'),
+  FollowingHandlers.getFollowing
 )
