@@ -22,7 +22,7 @@ const DEFAULT_CURATION_TITLE = 'Default curation title'
 const DEFAULT_DESCRIPTION = 'Default curation description'
 const DEFAULT_ITEMS = ['default', 'list', 'of', 'items']
 
-describe('Curations', () => {
+describe('Curation Contract', () => {
   let originalHandle: FullAOHandleFunction
   let memory: ArrayBuffer
 
@@ -330,13 +330,12 @@ describe('Curations', () => {
         expect(result.Messages)
           .to.be.an('array')
           .that.is.not.empty
-        expect(result.Messages[0].Data)
-          .to.be.a('string')
-          .that.equals(JSON.stringify([
+        expect(JSON.parse(result.Messages[0].Data))
+          .to.deep.equal([
             { hidden: false, item: 'one' },
             { hidden: true, item: 'two' },
             { hidden: false, item: 'three' }
-          ]))
+          ])
       })
     })
 
@@ -797,7 +796,7 @@ describe('Curations', () => {
             { name: 'Follow-Address', value: ALICE_ADDRESS }
           ]
         })
-  
+
         expect(result.Messages)
           .to.be.an('array')
           .that.is.not.empty
@@ -812,7 +811,7 @@ describe('Curations', () => {
             { name: 'Follow-Address', value: ALICE_ADDRESS }
           ]
         })
-  
+
         expect(result.Error)
           .to.be.a('string')
           .that.includes('This action is only available to the process Owner')
@@ -832,7 +831,7 @@ describe('Curations', () => {
       })
     })
   
-    describe('Unfollow', () => {
+    describe('Unfollowing', () => {
       it('Allows Owner to unfollow an address', async () => {
         const addresses = [ ALICE_ADDRESS, BOB_ADDRESS, CHARLS_ADDRESS ]
         for (const address of addresses) {

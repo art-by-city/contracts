@@ -5,10 +5,6 @@ local Following = {}
 local FollowingHandlers = {}
 
 function FollowingHandlers.follow(msg)
-  assert(
-    msg.From == ao.env.Process.Owner,
-    'This action is only available to the process Owner'
-  )
   assert(msg.Tags['Follow-Address'], 'Follow-Address tag is required')
 
   Following[msg.Tags['Follow-Address']] = 1
@@ -21,10 +17,6 @@ function FollowingHandlers.follow(msg)
 end
 
 function FollowingHandlers.unfollow(msg)
-  assert(
-    msg.From == ao.env.Process.Owner,
-    'This action is only available to the process Owner'
-  )
   assert(msg.Tags['Unfollow-Address'], 'Unfollow-Address tag is required')
 
   Following[msg.Tags['Unfollow-Address']] = nil
