@@ -1,10 +1,12 @@
+import AoLoader from '@permaweb/ao-loader'
 import fs from 'fs'
 import path from 'path'
-import AoLoader from '@permaweb/ao-loader'
 
-export const MODULE_NAME = 'Encrypted-Messages'
+export const MODULE_NAME = 'Art By City Contracts'
 export const OWNER_ADDRESS = ''.padEnd(43, '1')
 export const ALICE_ADDRESS = ''.padEnd(42, 'a')
+export const BOB_ADDRESS = ''.padEnd(42, 'b')
+export const CHARLS_ADDRESS = ''.padEnd(42, 'c')
 export const PROCESS_ID = ''.padEnd(43, '2')
 export const MODULE_ID = ''.padEnd(43, '3')
 export const DEFAULT_MODULE_ID = ''.padEnd(43, '4')
@@ -49,18 +51,16 @@ export const DEFAULT_HANDLE_OPTIONS = {
   From: ''
 }
 
-// TODO -> support multiple contracts
-const BUNDLED_SOURCE = fs.readFileSync(
-  path.join(path.resolve(), './dist/atomic-license.lua'),
-  'utf-8',
-)
-// TODO -> support multiple contracts
-export const BUNDLED_EVOLVED_SOURCE = fs.readFileSync(
-  path.join(path.resolve(), './dist/atomic-license-evolved.lua'),
-  'utf-8',
-)
+export type FullAOHandleFunction = (
+  buffer: ArrayBuffer | null,
+  msg: AoLoader.Message,
+  env: AoLoader.Environment
+) => Promise<AoLoader.HandleResponse & { Error?: string }>
 
-export async function createLoader() {
+export async function createLoader(
+  source: string,
+  tags?: { name: string, value: string }[]
+) {
   const handle = await AoLoader(AOS_WASM, {
     format: 'wasm64-unknown-emscripten-draft_2024_02_15',
     memoryLimit: '524288000', // in bytes
@@ -72,7 +72,7 @@ export async function createLoader() {
     {
       action: 'Eval',
       args: [{ name: 'Module', value: DEFAULT_MODULE_ID }],
-      Data: BUNDLED_SOURCE
+      Data: source
     }
   ]
   let memory: ArrayBuffer | null = null
@@ -88,9 +88,21 @@ export async function createLoader() {
         Data,
         From: OWNER_ADDRESS
       },
-      AO_ENV
+      {
+        ...AO_ENV,
+        Process: {
+          ...AO_ENV.Process,
+          Tags: [
+            ...AO_ENV.Process.Tags,
+            ...(tags || [])
+          ]
+        }
+      }
     )
   }
 
-  return { handle, memory: memory as unknown as ArrayBuffer }
+  return {
+    handle: handle as unknown as FullAOHandleFunction,
+    memory: memory as unknown as ArrayBuffer
+  }
 }

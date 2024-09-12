@@ -1,11 +1,8 @@
-import {
-  createDataItemSigner,
-  spawn as aoSpawn
-} from '@permaweb/aoconnect'
+import { createDataItemSigner } from '@permaweb/aoconnect'
 import Arweave from 'arweave'
 import { readFileSync } from 'fs'
 
-import { sendAosMessage } from '../util/send-aos-message'
+import { sendAosMessage } from '../../util/send-aos-message'
 
 const wallet = JSON.parse(readFileSync('./.secrets/key.json').toString())
 const arweave = Arweave.init({
@@ -16,8 +13,6 @@ const arweave = Arweave.init({
 const signer = createDataItemSigner(wallet)
 const appName = '@artbycity/atomic-license'
 const evolvedLuaSourceTxId = 'xJewRYBMtTkHp1qXp75AnhgaT23LjCgF8S3PjSsl4RE'
-const AOS_MODULE_ID = 'cbn0KKrBZH7hdNkNokuXLtGryrWM--PjSTBqIzw9Kkk'
-const SCHEDULER_ID = '_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA'
 const processId = 'E5H55Ilc8JrRqiRM3hlryfihavwTZm862YAVRp49q3w'
 
 async function evolveAtomicLicense() {
