@@ -5,7 +5,7 @@ import {
 import Arweave from 'arweave'
 import { readFileSync } from 'fs'
 
-import { sendAosMessage } from '../util/send-aos-message'
+import { sendAosMessage } from '../../util/send-aos-message'
 
 const wallet = JSON.parse(readFileSync('./.secrets/key.json').toString())
 const arweave = Arweave.init({

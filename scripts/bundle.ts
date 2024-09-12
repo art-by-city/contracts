@@ -6,7 +6,8 @@ import { bundle } from './lua-bundler'
 async function main() {
   const contracts = [
     'atomic-license',
-    'atomic-license-evolved'
+    'atomic-license-evolved',
+    'curation'
   ]
 
   for (const contract of contracts) {

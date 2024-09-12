@@ -1,21 +1,32 @@
 import { expect } from 'chai'
 import AoLoader from '@permaweb/ao-loader'
+import { readFileSync } from 'fs'
+import { join, resolve } from 'path'
 
 import {
   AO_ENV,
-  BUNDLED_EVOLVED_SOURCE,
   createLoader,
   DEFAULT_HANDLE_OPTIONS,
   DEFAULT_MODULE_ID,
   OWNER_ADDRESS
 } from '../util/setup'
 
+const atomicLicenseSource = readFileSync(
+  join(resolve(), './dist/atomic-license.lua'),
+  'utf-8',
+)
+
+const atomicLicenseEvolvedSource = readFileSync(
+  join(resolve(), './dist/atomic-license-evolved.lua'),
+  'utf-8',
+)
+
 describe('Atomic License', () => {
-  let originalHandle: AoLoader.handleFunction,
-      memory: ArrayBuffer
+  let originalHandle: AoLoader.handleFunction
+  let memory: ArrayBuffer
 
   beforeEach(async () => {
-    const loader = await createLoader()
+    const loader = await createLoader(atomicLicenseSource)
     originalHandle = loader.handle
     memory = loader.memory
   })
@@ -56,7 +67,7 @@ describe('Atomic License', () => {
         { name: 'Module', value: DEFAULT_MODULE_ID },
         { name: 'Action', value: 'Eval' }
       ],
-      Data: BUNDLED_EVOLVED_SOURCE
+      Data: atomicLicenseEvolvedSource
     })
 
     const afterEvolveResult = await handle({
