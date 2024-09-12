@@ -239,7 +239,7 @@ Handlers.add(
         Items[itemIndex].hidden = false
         ao.send({
           Target = msg.From,
-          Action = 'Hide-Item-Response',
+          Action = 'Unhide-Item-Response',
           Data = Items[itemIndex].item
         })
       else

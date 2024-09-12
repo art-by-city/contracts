@@ -5,6 +5,8 @@ import path from 'path'
 export const MODULE_NAME = 'Art By City Contracts'
 export const OWNER_ADDRESS = ''.padEnd(43, '1')
 export const ALICE_ADDRESS = ''.padEnd(42, 'a')
+export const BOB_ADDRESS = ''.padEnd(42, 'b')
+export const CHARLS_ADDRESS = ''.padEnd(42, 'c')
 export const PROCESS_ID = ''.padEnd(43, '2')
 export const MODULE_ID = ''.padEnd(43, '3')
 export const DEFAULT_MODULE_ID = ''.padEnd(43, '4')

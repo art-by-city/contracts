@@ -7,7 +7,8 @@ async function main() {
   const contracts = [
     'atomic-license',
     'atomic-license-evolved',
-    'curation'
+    'curation',
+    'following'
   ]
 
   for (const contract of contracts) {
