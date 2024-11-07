@@ -1272,4 +1272,38 @@ describe('Curation Contract', () => {
         .that.includes('This action is only available to the process Owner')
     })
   })
+
+  describe('ACL', () => {
+    describe('Adding roles', () => {
+      it('Allows Owner to add roles')
+      it('Prevents anyone else from adding roles')
+      it('Validates when adding roles')
+      it('Allows adding roles with permission')
+    })
+
+    describe('Listing roles', () => {
+      it('Allows anyone to list roles')
+    })
+
+    describe('Removing roles', () => {
+      it('Allows Owner to remove roles')
+      it('Prevents anyone else from removing roles')
+      it('Validates when removing roles')
+      it('Allows removing roles with permission')
+    })
+
+    describe('Granting roles', () => {
+      it('Allows Owner to grant roles')
+      it('Prevents anyone else from granting roles')
+      it('Validates when granting roles')
+      it('Allows granting roles with permission')
+    })
+
+    describe('Revoking roles', () => {
+      it('Allows Owner to revoke roles')
+      it('Prevents anyone else from revoking roles')
+      it('Validates when revoking roles')
+      it('Allows revoking roles with permission')
+    })
+  })
 })
