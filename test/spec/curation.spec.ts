@@ -1273,6 +1273,8 @@ describe('Curation Contract', () => {
     })
   })
 
+  // TODO -> ACL on curation & following stuff
+
   describe('ACL', () => {
     describe('Adding roles', () => {
       it('Allows Owner to add roles')
